@@ -5,6 +5,9 @@ from jivochat import main as jivo
 from vibertelebot import main as vbbot
 from db_func.database import create_table
 from loguru import logger
+from payment.generator import get_response_data
+from payment.handler import main as sender
+from tasks.task import task_checker as taskfunel
 
 
 app = Flask(__name__)
@@ -38,6 +41,21 @@ def jivochat_endpoint_viber():
     return response
 
 
+@app.route('/payment', methods=['POST'])
+def payment_endpoint():
+    raw_data = request.get_data()
+    data = json.loads(raw_data.decode())
+    logger.info(data)
+    sender(data)
+    returned_data = get_response_data(data)
+    response = app.response_class(
+        response=json.dumps(returned_data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
 @app.route('/viber', methods=['POST'])
 def viber_endpoint():
     source = 'viber'
@@ -54,6 +72,7 @@ if __name__ == '__main__':
     # telegram_bot = Process(target=tgbot.main).start()
     create_table()
     try:
+        background_process = Process(target=taskfunel).start()
         flask_server = Process(target=server_launch).start()
         # telegram_bot = Process(target=tgbot.main).start()
     except KeyboardInterrupt:
@@ -61,3 +80,5 @@ if __name__ == '__main__':
         # telegram_bot.terminate()
         flask_server.join()
         # telegram_bot.join()
+        background_process.terminate()
+        background_process.join()

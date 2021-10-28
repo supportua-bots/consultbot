@@ -15,7 +15,7 @@ from vibertelebot.handlers import user_message_handler
 from vibertelebot.utils.tools import keyboard_consctructor
 from textskeyboards import texts as resources
 from textskeyboards import viberkeyboards as kb
-from db_func.database import add_user, check_user
+from db_func.database import add_user, check_user, paid_consults
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -58,8 +58,10 @@ def main(request):
             reply_keyboard = kb.free_consult
             reply_text = resources.greeting_message
         elif user_data[1] > 0:
+            counter = paid_consults(viber_request.user.id)
             reply_keyboard = kb.paid_consult
-            reply_text = resources.greeting_message
+            reply_text = resources.greeting_message.replace(
+                '[counter]', str(counter))
         else:
             reply_keyboard = kb.buy_consult
             reply_text = resources.greeting_message

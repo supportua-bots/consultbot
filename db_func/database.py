@@ -31,7 +31,9 @@ def create_table():
     query = '''CREATE TABLE IF NOT EXISTS DATA
                         (chat_id TEXT,
                         circle_paid INTEGER,
-                        circle_free INTEGER);'''
+                        circle_free INTEGER,
+                        stage TEXT,
+                        counter INTEGER);'''
     post_sql_query(query)
 
 
@@ -41,7 +43,7 @@ def add_user(chat_id):
                         f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if not rows:
-        query = f"INSERT INTO DATA (chat_id, circle_paid, circle_free) VALUES ('{chat_id}', '0', '1');"
+        query = f"INSERT INTO DATA (chat_id, circle_paid, circle_free, stage, counter) VALUES ('{chat_id}', '0', '1', 'chat', '0');"
         logger.info(post_sql_query(query))
 
 
@@ -51,3 +53,79 @@ def check_user(chat_id):
                         f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     return rows[0]
+
+
+@logger.catch
+def minus_free_consult(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][2]) - 1
+        query = f"UPDATE DATA SET circle_free = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def minus_paid_consult(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][1]) - 1
+        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def plus_paid_consult(chat_id, amount):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][1]) + int(amount)
+        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def change_stage_to_await(chat_id):
+    query = f"UPDATE DATA SET stage = 'await' WHERE chat_id = '{chat_id}';"
+    post_sql_query(query)
+
+
+@logger.catch
+def change_stage_to_chat(chat_id):
+    query = f"UPDATE DATA SET stage = 'chat' WHERE chat_id = '{chat_id}';"
+    post_sql_query(query)
+
+
+@logger.catch
+def await_list():
+    sql_selection = f"SELECT * FROM DATA WHERE stage = 'await';"
+    rows = post_sql_query(sql_selection)
+    return rows
+
+
+@logger.catch
+def plus_wait_counter(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][4]) + 1
+        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def reset_counter(chat_id):
+    query = f"UPDATE DATA SET counter = '0' WHERE chat_id = '{chat_id}';"
+    post_sql_query(query)
+
+
+@logger.catch
+def paid_consults(chat_id):
+    query = f"SELECT * FROM DATA WHERE chat_id = '{chat_id}';"
+    rows = post_sql_query(query)
+    return rows[0][1]
