@@ -7,11 +7,10 @@ from telegram.ext import (CallbackQueryHandler, Updater, MessageHandler,
                           CommandHandler, ConversationHandler, Filters)
 from telegram.utils.request import Request
 from .handlers import (echo_handler, greetings_handler, menu_handler,
-                      video_handler,acceptance_handler, name_handler,
-                      phone_handler, category_handler, brand_handler,
-                      serial_number_handler, photos_handler, reason_handler,
-                      date_handler, time_handler, operator_handler,
-                      chat_handler)
+                       operator_handler, chat_handler, issue_solved_handler,
+                       free_consult_handler, paid_consult_handler,
+                       consult_handler, buy_consult_handler, purchase_handler,
+                       link_handler, payment_completed_handler)
 from loguru import logger
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -27,7 +26,8 @@ logger.add(
 
 
 TOKEN = os.getenv("TOKEN")
-NAME, PHONE, CATEGORY, SERIAL_NUMBER, PHOTOS, REASON, CHAT = range(7)
+CHAT = range(1)
+
 
 @logger.catch
 def main():
@@ -57,71 +57,33 @@ def main():
         entry_points=[
             CommandHandler('start', greetings_handler),
             CallbackQueryHandler(menu_handler,
-                                            pattern=r'^start$',
-                                            pass_user_data=True),
-            CallbackQueryHandler(video_handler,
-                                            pattern=r'^video$',
-                                            pass_user_data=True),
-            CallbackQueryHandler(acceptance_handler,
-                                            pattern=r'^continue$',
-                                            pass_user_data=True),
-            CallbackQueryHandler(date_handler,
-                                            pattern=r'^date',
-                                            pass_user_data=True),
-            CallbackQueryHandler(time_handler,
-                                            pattern=r'^time',
-                                            pass_user_data=True),
-            CallbackQueryHandler(brand_handler,
-                                            pattern=r'^brand',
-                                            pass_user_data=True),
-            CallbackQueryHandler(photos_handler,
-                                            pattern=r'^upload',
-                                            pass_user_data=True),
-            CallbackQueryHandler(operator_handler,
-                                            pattern=r'^operator',
-                                            pass_user_data=True),
-            CallbackQueryHandler(reason_handler,
-                                            pattern=r'^reason',
-                                            pass_user_data=True),
+                                 pattern=r'^start$',
+                                 pass_user_data=True),
+            CallbackQueryHandler(free_consult_handler,
+                                 pattern=r'^free_consult$',
+                                 pass_user_data=True),
+            CallbackQueryHandler(consult_handler,
+                                 pattern=r'^consult$',
+                                 pass_user_data=True),
+            CallbackQueryHandler(paid_consult_handler,
+                                 pattern=r'^paid_consult',
+                                 pass_user_data=True),
+            CallbackQueryHandler(buy_consult_handler,
+                                 pattern=r'^buy_consult',
+                                 pass_user_data=True),
+            CallbackQueryHandler(payment_completed_handler,
+                                 pattern=r'^payment_completed',
+                                 pass_user_data=True),
+            CallbackQueryHandler(purchase_handler,
+                                 pattern=r'^purchase',
+                                 pass_user_data=True)
         ],
         states={
-            NAME: [MessageHandler(Filters.regex("Зв'язок з оператором"), operator_handler,
-                                    pass_user_data=True),
-                MessageHandler(Filters.all, name_handler,
-                                    pass_user_data=True)],
-            PHONE: [MessageHandler(Filters.regex("Зв'язок з оператором"), operator_handler,
-                                    pass_user_data=True),
-                    MessageHandler(Filters.all, phone_handler,
-                                    pass_user_data=True)],
-            CATEGORY: [CallbackQueryHandler(category_handler,
-                                            pattern=r'^category',
-                                            pass_user_data=True),
-                        MessageHandler(Filters.regex("Зв'язок з оператором"), operator_handler,
-                                    pass_user_data=True),
-                       MessageHandler(Filters.all, category_handler,
-                                    pass_user_data=True)],
-            SERIAL_NUMBER: [MessageHandler(Filters.regex("Зв'язок з оператором"), operator_handler,
-                                    pass_user_data=True),
-                            MessageHandler(Filters.all, serial_number_handler,
-                                    pass_user_data=True)],
-            PHOTOS: [MessageHandler(Filters.regex("Продовжити"), photos_handler,
-                                    pass_user_data=True),
-                     MessageHandler(Filters.regex("Зв'язок з оператором"), operator_handler,
-                                    pass_user_data=True),
-                     MessageHandler(Filters.all, photos_handler,
-                                    pass_user_data=True),
-                     CallbackQueryHandler(photos_handler,
-                                                     pattern=r'^upload',
-                                                     pass_user_data=True)],
-            REASON: [MessageHandler(Filters.regex("Зв'язок з оператором"), operator_handler,
-                                    pass_user_data=True),
-                     MessageHandler(Filters.all, reason_handler,
-                                    pass_user_data=True)],
             CHAT: [MessageHandler(Filters.all, chat_handler,
-                                    pass_user_data=True),
+                                  pass_user_data=True),
                    CallbackQueryHandler(menu_handler,
-                                                   pattern=r'^start$',
-                                                   pass_user_data=True),],
+                                        pattern=r'^start$',
+                                        pass_user_data=True), ],
         },
         fallbacks=[
             CommandHandler('cancel', greetings_handler),
@@ -137,6 +99,7 @@ def main():
     updater.start_polling()
     updater.idle()
     logger.info('Stopped')
+
 
 if __name__ == '__main__':
     main()

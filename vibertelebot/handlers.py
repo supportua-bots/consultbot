@@ -144,7 +144,8 @@ def user_message_handler(viber, viber_request):
                 logger.info(user_data)
                 if user_data[2] > 0:
                     reply_keyboard = kb.free_consult
-                    reply_text = resources.greeting_message
+                    reply_text = resources.greeting_message.replace(
+                        '[counter]', '0')
                 elif user_data[1] > 0:
                     counter = paid_consults(chat_id)
                     reply_keyboard = kb.paid_consult
@@ -152,7 +153,8 @@ def user_message_handler(viber, viber_request):
                         '[counter]', str(counter))
                 else:
                     reply_keyboard = kb.buy_consult
-                    reply_text = resources.greeting_message
+                    reply_text = resources.greeting_message.replace(
+                        '[counter]', '0')
                 time.sleep(1)
             elif text == 'issue_solved':
                 change_stage_to_chat(chat_id)
@@ -162,7 +164,8 @@ def user_message_handler(viber, viber_request):
                 logger.info(user_data)
                 if user_data[2] > 0:
                     reply_keyboard = kb.free_consult
-                    reply_text = resources.greeting_message
+                    reply_text = resources.greeting_message.replace(
+                        '[counter]', '0')
                 elif user_data[1] > 0:
                     counter = paid_consults(chat_id)
                     reply_keyboard = kb.paid_consult
@@ -170,7 +173,8 @@ def user_message_handler(viber, viber_request):
                         '[counter]', str(counter))
                 else:
                     reply_keyboard = kb.buy_consult
-                    reply_text = resources.greeting_message
+                    reply_text = resources.greeting_message.replace(
+                        '[counter]', '0')
                 time.sleep(1)
             elif text == 'free_consult':
                 tracking_data['CHAT_MODE'] = 'on'
@@ -223,7 +227,8 @@ def user_message_handler(viber, viber_request):
                 logger.info(user_data)
                 if user_data[2] > 0:
                     reply_keyboard = kb.free_consult
-                    reply_text = resources.greeting_message
+                    reply_text = resources.greeting_message.replace(
+                        '[counter]', '0')
                 elif user_data[1] > 0:
                     counter = paid_consults(chat_id)
                     reply_keyboard = kb.paid_consult
@@ -231,7 +236,8 @@ def user_message_handler(viber, viber_request):
                         '[counter]', str(counter))
                 else:
                     reply_keyboard = kb.buy_consult
-                    reply_text = resources.greeting_message
+                    reply_text = resources.greeting_message.replace(
+                        '[counter]', '0')
                 try:
                     open(f'media/{chat_id}/history.txt', 'w').close()
                 except:

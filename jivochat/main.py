@@ -23,6 +23,7 @@ from jivochat.utils import resources
 from loguru import logger
 from textskeyboards import texts
 from textskeyboards import viberkeyboards
+from textskeyboards import telegramkeyboards
 from db_func.database import change_stage_to_await
 
 
@@ -79,24 +80,18 @@ def main(data, source):
                                                           tracking_data=tracking_data,
                                                           media=link)])
     else:
-        user_id = str(re.findall(f'\[(.*?)\]', data['visitor']['name'])[0])
         if data['event_name'] == 'chat_finished':
             if source == 'telegram':
+                user_id = int(re.findall(
+                    f'\[(.*?)\]', data['visitor']['name'])[0])
                 reply_markup = ReplyKeyboardRemove()
                 bot.send_message(
                             chat_id=user_id,
-                            text=resources.operator_ended_chat,
-                            reply_markup=reply_markup)
-                time.sleep(1)
-                inline_keyboard = [[InlineKeyboardButton(text='Меню',
-                                                         callback_data='start')]]
-                inline_buttons = InlineKeyboardMarkup(
-                    inline_keyboard=inline_keyboard)
-                bot.send_message(
-                            chat_id=user_id,
-                            text=resources.final_touch,
-                            reply_markup=inline_buttons)
+                            text=texts.operator_ended_chat,
+                            reply_markup=telegramkeyboards.clarificational_consult)
             else:
+                user_id = str(re.findall(
+                    f'\[(.*?)\]', data['visitor']['name'])[0])
                 tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
                 tracking_data = json.dumps(tracking_data)
                 change_stage_to_await(user_id)

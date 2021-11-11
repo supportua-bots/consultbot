@@ -23,6 +23,7 @@ from loguru import logger
 from db_func.database import plus_paid_consult, check_user
 from textskeyboards import texts as resources
 from textskeyboards import viberkeyboards as kb
+from textskeyboards import telegramkeyboards as tgkb
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -64,3 +65,20 @@ def main(data):
             viber.send_messages(chat_id, [TextMessage(text=reply_text,
                                                       keyboard=reply_keyboard,
                                                       tracking_data=tracking_data)])
+        else:
+            user_data = check_user(chat_id)
+            logger.info(user_data)
+            if user_data[1] > 0:
+                reply_keyboard = tgkb.paid_consult
+                reply_text = resources.successfull_payment
+            else:
+                reply_keyboard = tgkb.buy_consult
+                reply_text = resources.greeting_message
+            with open(f'media/{chat_id}/paymessage.txt', 'r') as f:
+                message_id = f.read()
+            bot.delete_message(chat_id=chat_id,
+                               message_id=message_id)
+            bot.send_message(
+                        chat_id=chat_id,
+                        text=reply_text,
+                        reply_markup=reply_keyboard)

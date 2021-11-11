@@ -8,6 +8,7 @@ from loguru import logger
 from payment.generator import get_response_data
 from payment.handler import main as sender
 from tasks.task import task_checker as taskfunel
+from telegrambot import main as tgbot
 
 
 app = Flask(__name__)
@@ -74,11 +75,11 @@ if __name__ == '__main__':
     try:
         background_process = Process(target=taskfunel).start()
         flask_server = Process(target=server_launch).start()
-        # telegram_bot = Process(target=tgbot.main).start()
+        telegram_bot = Process(target=tgbot.main).start()
     except KeyboardInterrupt:
         flask_server.terminate()
-        # telegram_bot.terminate()
-        flask_server.join()
-        # telegram_bot.join()
+        telegram_bot.terminate()
         background_process.terminate()
+        flask_server.join()
+        telegram_bot.join()
         background_process.join()
