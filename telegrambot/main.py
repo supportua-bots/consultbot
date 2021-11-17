@@ -76,6 +76,9 @@ def main():
                                  pass_user_data=True),
             CallbackQueryHandler(purchase_handler,
                                  pattern=r'^purchase',
+                                 pass_user_data=True),
+            CallbackQueryHandler(issue_solved_handler,
+                                 pattern=r'^issue_solved',
                                  pass_user_data=True)
         ],
         states={
