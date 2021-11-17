@@ -1,6 +1,5 @@
 __pycache__/
 migrations/
-textskeyboards/
 env/
 media/
 .env
@@ -11,5 +10,4 @@ db.sqlite3
 logs/
 *.DS_Store
 *.jpg
-*.txt
-test.py
+*.db
