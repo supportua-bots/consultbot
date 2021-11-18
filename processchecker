@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source /var/www/onlyk8/consultbot/env/bin/activate
+nohup /var/www/onlyk8/.pyenv/versions/3.9.5/bin/python3 /var/www/onlyk8/consultbot/app.py
+deactivate
