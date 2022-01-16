@@ -51,20 +51,8 @@ def main(request):
             "client failed receiving message. failure: {viber_request}")
     elif isinstance(viber_request, ViberConversationStartedRequest):
         # First touch, sending to user keyboard with phone sharing button
-        add_user(viber_request.user.id)
-        user_data = check_user(viber_request.user.id)
-        logger.info(user_data)
-        if user_data[2] > 0:
-            reply_keyboard = kb.free_consult
-            reply_text = resources.greeting_message
-        elif user_data[1] > 0:
-            counter = paid_consults(viber_request.user.id)
-            reply_keyboard = kb.paid_consult
-            reply_text = resources.greeting_message.replace(
-                '[counter]', str(counter))
-        else:
-            reply_keyboard = kb.buy_consult
-            reply_text = resources.greeting_message
+        reply_keyboard = kb.start
+        reply_text = resources.description
         viber.send_messages(viber_request.user.id, [
             TextMessage(
                 text=reply_text,

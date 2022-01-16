@@ -6,6 +6,7 @@ import hmac
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime
+from liqpay.liqpay import LiqPay
 from payment.settings import product_name, product_price, merchant_account, merchant_domain
 
 
@@ -55,6 +56,24 @@ def get_payment_link(product_count, chat_id, platform):
     # resp = urllib.request.urlopen(req)
     # link = urllib.request.urlopen(URL, data=request_data).geturl()
     return x.json()["invoiceUrl"]
+
+
+def get_liqpay_link(product_count, chat_id, platform, phone):
+    order_date = int(datetime.today().timestamp())
+    amount = int(product_price) * int(product_count)
+    order_reference = f'{chat_id}%%{str(order_date)}%%{platform}'
+    liqpay = LiqPay(os.getenv('LIQPAY_PUBLIC'),
+                    os.getenv('LIQPAY_PRIVATE'))
+    res = liqpay.api("request", {
+        "action": "invoice_bot",
+        "version": "3",
+        "amount": str(amount),
+        "currency": "UAH",
+        "order_id": order_reference,
+        "phone": phone
+    })
+
+    return res['href']
 
 
 def get_response_data(data):

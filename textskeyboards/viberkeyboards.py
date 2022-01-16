@@ -6,8 +6,14 @@ from vibertelebot.utils.tools import keyboard_consctructor
 LOGO = 'https://i.ibb.co/82bQQtt/download.png'
 MAIN_COLOR = os.getenv("COLOR")
 
+
+start = keyboard_consctructor([
+            ('Старт', 'start', '')
+            ])
+
 free_consult = keyboard_consctructor([
-            ('Воспользоваться бесплатной консультацией', 'free_consult', '')
+            ('Під’єднати оператора 👨‍💻', 'free_consult', ''),
+            ('Популярні питання ❓', 'questions', '')
             ])
 
 clarificational_consult = keyboard_consctructor([
@@ -16,11 +22,13 @@ clarificational_consult = keyboard_consctructor([
             ])
 
 paid_consult = keyboard_consctructor([
-            ('Проконсультироваться', 'paid_consult', '')
+            ('Проконсультироваться', 'paid_consult', ''),
+            ('Популярні питання ❓', 'questions', '')
             ])
 
 buy_consult = keyboard_consctructor([
-            ('Приобрести пакет консультаций', 'buy_consult', '')
+            ('Приобрести пакет консультаций', 'buy_consult', ''),
+            ('Популярні питання ❓', 'questions', '')
             ])
 
 end_chat_keyboard = keyboard_consctructor([
@@ -79,3 +87,22 @@ def payment_keyboard_generator(items: list, link: str) -> dict:
                      "Text": items[2][0]}]
     }
     return keyboard
+
+
+phone_keyboard = {
+        "DefaultHeight": False,
+        "BgColor": '#f7f9fc',
+        "Type": "keyboard",
+        "Buttons": [
+            {
+                "Columns": 6,
+                "Rows": 1,
+                "BgColor": MAIN_COLOR,
+                "BgLoop": True,
+                "ActionType": "share-phone",
+                "ActionBody": "phone_reply",
+                "ReplyType": "message",
+                "Text": "Поділитися номером телефону",
+            },
+        ]
+    }

@@ -33,17 +33,18 @@ def create_table():
                         circle_paid INTEGER,
                         circle_free INTEGER,
                         stage TEXT,
-                        counter INTEGER);'''
+                        counter INTEGER,
+                        phone TEXT);'''
     post_sql_query(query)
 
 
 @logger.catch
-def add_user(chat_id):
+def add_user(chat_id, phone):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"chat_id = '{chat_id}';"
+                        f"phone = '{phone}';"
     rows = post_sql_query(sql_selection)
     if not rows:
-        query = f"INSERT INTO DATA (chat_id, circle_paid, circle_free, stage, counter) VALUES ('{chat_id}', '0', '1', 'chat', '0');"
+        query = f"INSERT INTO DATA (chat_id, circle_paid, circle_free, stage, counter, phone) VALUES ('{chat_id}', '0', '1', 'chat', '0', '{phone}');"
         logger.info(post_sql_query(query))
 
 

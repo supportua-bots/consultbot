@@ -17,7 +17,7 @@ from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import telegramkeyboards as kb
 from db_func.database import add_user, check_user, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
-from payment.generator import get_payment_link
+from payment.generator import get_payment_link, get_liqpay_link
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -199,8 +199,20 @@ def chat_handler(update: Update, context: CallbackContext):
                                  text=resources.chat_ending,
                                  reply_markup=reply_markup)
         time.sleep(1)
+        user_data = check_user(update.message.from_user.id)
+        logger.info(user_data)
+        if user_data[2] > 0:
+            reply_text = resources.greeting_message.replace(
+                '[counter]', '0')
+        elif user_data[1] > 0:
+            counter = paid_consults(update.message.from_user.id)
+            reply_text = resources.greeting_message.replace(
+                '[counter]', str(counter))
+        else:
+            reply_text = resources.greeting_message.replace(
+                '[counter]', '0')
         context.bot.send_message(chat_id=update.message.from_user.id,
-                                 text=resources.greeting_message,
+                                 text=reply_text,
                                  reply_markup=kb.clarificational_consult)
         return ConversationHandler.END
     else:
@@ -227,8 +239,20 @@ def echo_handler(update: Update, context: CallbackContext):
                                  text=resources.chat_ending,
                                  reply_markup=reply_markup)
         time.sleep(1)
+        user_data = check_user(update.message.from_user.id)
+        logger.info(user_data)
+        if user_data[2] > 0:
+            reply_text = resources.greeting_message.replace(
+                '[counter]', '0')
+        elif user_data[1] > 0:
+            counter = paid_consults(update.message.from_user.id)
+            reply_text = resources.greeting_message.replace(
+                '[counter]', str(counter))
+        else:
+            reply_text = resources.greeting_message.replace(
+                '[counter]', '0')
         context.bot.send_message(chat_id=update.message.from_user.id,
-                                 text=resources.greeting_message,
+                                 text=reply_text,
                                  reply_markup=kb.clarificational_consult)
     else:
         update.message.reply_text(
@@ -347,7 +371,9 @@ def purchase_handler(update: Update, context: CallbackContext):
         text=f'{update.callback_query.message.text}\nВаш вибір: {choice}')
     amount = int(choice)
     context.user_data['AMOUNT'] = amount
-    link = get_payment_link(amount, str(context.user_data['ID']), 'telegram')
+    phone = check_user(str(context.user_data['ID']))[5]
+    link = get_liqpay_link(amount, str(
+        context.user_data['ID']), 'telegram', phone)
     reply_keyboard = kb.payment_keyboard_generator(
         kb.payment_proceed, link)
     reply_text = resources.please_pay
@@ -377,7 +403,9 @@ def link_handler(update: Update, context: CallbackContext):
         amount = context.user_data['AMOUNT']
     else:
         amount = 1
-    link = get_payment_link(amount, str(context.user_data['ID']), 'telegram')
+    phone = check_user(str(context.user_data['ID']))[5]
+    link = get_liqpay_link(amount, str(
+        context.user_data['ID']), 'telegram', phone)
     context.user_data['LINK'] = link
     reply_keyboard = kb.payment_keyboard_generator(
         kb.payment_proceed, link)

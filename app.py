@@ -57,6 +57,22 @@ def payment_endpoint():
     return response
 
 
+@app.route('/liqpay', methods=['POST'])
+def liqpay_endpoint():
+    raw_data = request.get_data()
+    logger.info(raw_data)
+    data = json.loads(raw_data.decode())
+    logger.info(data)
+    # sender(data)
+    # returned_data = get_response_data(data)
+    response = app.response_class(
+        response={'result': 'ok'},
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
 @app.route('/viber', methods=['POST'])
 def viber_endpoint():
     source = 'viber'

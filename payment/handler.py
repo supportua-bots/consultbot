@@ -58,7 +58,8 @@ def main(data):
             logger.info(user_data)
             if user_data[1] > 0:
                 reply_keyboard = kb.paid_consult
-                reply_text = resources.successfull_payment
+                reply_text = resources.successfull_payment.replace(
+                    '[counter]', str(amount))
             else:
                 reply_keyboard = kb.buy_consult
                 reply_text = resources.greeting_message
@@ -70,7 +71,8 @@ def main(data):
             logger.info(user_data)
             if user_data[1] > 0:
                 reply_keyboard = tgkb.paid_consult
-                reply_text = resources.successfull_payment
+                reply_text = resources.successfull_payment.replace(
+                    '[counter]', str(amount))
             else:
                 reply_keyboard = tgkb.buy_consult
                 reply_text = resources.greeting_message
