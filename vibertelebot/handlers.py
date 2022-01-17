@@ -16,6 +16,7 @@ from viberbot.api.messages.contact_message import ContactMessage
 from viberbot.api.messages.location_message import LocationMessage
 from viberbot.api.messages.rich_media_message import RichMediaMessage
 from viberbot.api.messages.picture_message import PictureMessage
+from viberbot.api.messages.url_message import URLMessage
 from viberbot.api.messages.video_message import VideoMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
@@ -131,6 +132,8 @@ def user_message_handler(viber, viber_request):
                                 viber_request.message.media,
                                 viber_request.message_token,
                                 'viber')
+    elif isinstance(message, URLMessage):
+        logger.info('User sent URL')
     elif isinstance(message, PictureMessage):
         response = requests.get(viber_request.message.media)
         if not os.path.exists(f'media/{chat_id}'):
@@ -242,7 +245,7 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.operator_message
             elif text == 'buy_consult':
                 reply_keyboard = kb.buy_amount
-                reply_text = resources.replace(
+                reply_text = resources.select_amount.replace(
                     '[counter]', '0')
             # elif text[:8] == 'purchase':
             #     amount = int(text.split('_')[1])
@@ -273,6 +276,8 @@ def user_message_handler(viber, viber_request):
             elif text == 'payment_completed':
                 reply_keyboard = kb.payment_check
                 reply_text = resources.please_wait
+            elif text[:5] == 'https':
+                return logger.info('reply URL')
             else:
                 reply_keyboard = kb.phone_keyboard
                 reply_text = resources.phone_message

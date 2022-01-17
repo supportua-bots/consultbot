@@ -68,6 +68,7 @@ def payment_keyboard_generator(items: list, link: str) -> dict:
                      "ActionType": "open-url",
                      "ActionBody": link,
                      "ReplyType": "message",
+                     "OpenURLType": "internal",
                      "Text": items[0][0]},
                     {"Columns": 3,
                      "Rows": 1,

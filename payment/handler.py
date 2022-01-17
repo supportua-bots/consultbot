@@ -2,6 +2,9 @@ import os
 import re
 import time
 import requests
+import json
+import urllib.parse
+import base64
 from pathlib import Path
 from dotenv import load_dotenv
 from telegram import Bot
@@ -23,6 +26,7 @@ from loguru import logger
 from db_func.database import plus_paid_consult, check_user
 from textskeyboards import texts as resources
 from textskeyboards import viberkeyboards as kb
+from liqpay.liqpay import LiqPay
 from textskeyboards import telegramkeyboards as tgkb
 
 
@@ -50,6 +54,53 @@ def main(data):
     amount = int(data['products'][0]['count'])
     payment_status = data['transactionStatus']
     if payment_status == 'Approved':
+        plus_paid_consult(chat_id, amount)
+        if platform == 'viber':
+            tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
+            tracking_data = json.dumps(tracking_data)
+            user_data = check_user(chat_id)
+            logger.info(user_data)
+            if user_data[1] > 0:
+                reply_keyboard = kb.paid_consult
+                reply_text = resources.successfull_payment.replace(
+                    '[counter]', str(amount))
+            else:
+                reply_keyboard = kb.buy_consult
+                reply_text = resources.greeting_message
+            viber.send_messages(chat_id, [TextMessage(text=reply_text,
+                                                      keyboard=reply_keyboard,
+                                                      tracking_data=tracking_data)])
+        else:
+            user_data = check_user(chat_id)
+            logger.info(user_data)
+            if user_data[1] > 0:
+                reply_keyboard = tgkb.paid_consult
+                reply_text = resources.successfull_payment.replace(
+                    '[counter]', str(amount))
+            else:
+                reply_keyboard = tgkb.buy_consult
+                reply_text = resources.greeting_message
+            with open(f'media/{chat_id}/paymessage.txt', 'r') as f:
+                message_id = f.read()
+            bot.delete_message(chat_id=chat_id,
+                               message_id=message_id)
+            bot.send_message(
+                        chat_id=chat_id,
+                        text=reply_text,
+                        reply_markup=reply_keyboard)
+
+
+def liqpay_main(data):
+    liqpay = LiqPay(os.getenv('LIQPAY_PUBLIC'),
+                    os.getenv('LIQPAY_PRIVATE'))
+    decoded_data = json.loads(json.dumps(urllib.parse.parse_qs(data)))
+    clean_data = json.loads(base64.b64decode(decoded_data['data'][0]).decode())
+    chat_id = str(clean_data['order_id'].split('%%')[0])
+    platform = str(clean_data['order_id'].split('%%')[2])
+    amount = int(clean_data['amount'])
+    payment_status = str(clean_data['status'])
+    logger.info(clean_data)
+    if payment_status == 'success':
         plus_paid_consult(chat_id, amount)
         if platform == 'viber':
             tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}

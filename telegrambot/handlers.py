@@ -26,7 +26,7 @@ load_dotenv(dotenv_path)
 TOKEN = os.getenv("TOKEN")
 
 locale.setlocale(locale.LC_TIME, 'uk_UA.UTF-8')
-CHAT = range(1)
+CHAT, MENU = range(2)
 
 
 logger.add(
@@ -62,7 +62,21 @@ def choice_definer(update):
 
 @logger.catch
 def greetings_handler(update: Update, context: CallbackContext):
-    menu_handler(update, context)
+    state = phone_handler(update, context)
+    return state
+
+
+def phone_handler(update: Update, context: CallbackContext):
+    contact_keyboard = [[KeyboardButton('Поділитися номером телефону',
+                                        request_contact=True,)]]
+
+    reply_markup = ReplyKeyboardMarkup(keyboard=contact_keyboard,
+                                       resize_keyboard=True,
+                                       one_time_keyboard=True)
+    context.bot.send_message(chat_id=update.message.from_user.id,
+                             text=resources.phone_message,
+                             reply_markup=reply_markup)
+    return MENU
 
 
 @logger.catch
@@ -72,22 +86,36 @@ def menu_handler(update: Update, context: CallbackContext):
         chat_id = update.callback_query.message.chat.id
     except AttributeError:
         chat_id = update.message.from_user.id
-    add_user(chat_id)
+    try:
+        phone = update.message.contact.phone_number
+    except:
+        phone = None
+    if phone:
+        add_user(str(chat_id), phone)
     user_data = check_user(chat_id)
     logger.info(user_data)
-    if user_data[2] > 0:
-        reply_keyboard = kb.free_consult
-        reply_text = resources.greeting_message.replace(
-            '[counter]', '0')
-    elif user_data[1] > 0:
-        counter = paid_consults(chat_id)
-        reply_keyboard = kb.paid_consult
-        reply_text = resources.greeting_message.replace(
-            '[counter]', str(counter))
+    if user_data:
+        if user_data[2] > 0:
+            reply_keyboard = kb.free_consult
+            reply_text = resources.greeting_message.replace(
+                '[counter]', '0')
+        elif user_data[1] > 0:
+            counter = paid_consults(chat_id)
+            reply_keyboard = kb.paid_consult
+            reply_text = resources.greeting_message.replace(
+                '[counter]', str(counter))
+        else:
+            reply_keyboard = kb.buy_consult
+            reply_text = resources.greeting_message.replace(
+                '[counter]', '0')
     else:
-        reply_keyboard = kb.buy_consult
-        reply_text = resources.greeting_message.replace(
-            '[counter]', '0')
+        contact_keyboard = [[KeyboardButton('Поділитися номером телефону',
+                                            request_contact=True,)]]
+
+        reply_keyboard = ReplyKeyboardMarkup(keyboard=contact_keyboard,
+                                             resize_keyboard=True,
+                                             one_time_keyboard=True)
+        reply_text = 'За цим номером вже створений інший аккаунт.'
     try:
         request = update.callback_query.message
         choice = choice_definer(update)

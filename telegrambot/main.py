@@ -10,7 +10,7 @@ from .handlers import (echo_handler, greetings_handler, menu_handler,
                        operator_handler, chat_handler, issue_solved_handler,
                        free_consult_handler, paid_consult_handler,
                        consult_handler, buy_consult_handler, purchase_handler,
-                       link_handler, payment_completed_handler)
+                       link_handler, payment_completed_handler, phone_handler)
 from loguru import logger
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -26,7 +26,7 @@ logger.add(
 
 
 TOKEN = os.getenv("TOKEN")
-CHAT = range(1)
+CHAT, MENU = range(2)
 
 
 @logger.catch
@@ -87,6 +87,8 @@ def main():
                    CallbackQueryHandler(menu_handler,
                                         pattern=r'^start$',
                                         pass_user_data=True), ],
+            MENU: [MessageHandler(Filters.all, menu_handler,
+                                   pass_user_data=True)]
         },
         fallbacks=[
             CommandHandler('cancel', greetings_handler),

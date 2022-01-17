@@ -7,6 +7,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime
 from liqpay.liqpay import LiqPay
+from loguru import logger
 from payment.settings import product_name, product_price, merchant_account, merchant_domain
 
 
@@ -72,7 +73,7 @@ def get_liqpay_link(product_count, chat_id, platform, phone):
         "order_id": order_reference,
         "phone": phone
     })
-
+    logger.info(res)
     return res['href']
 
 

@@ -7,6 +7,7 @@ from db_func.database import create_table
 from loguru import logger
 from payment.generator import get_response_data
 from payment.handler import main as sender
+from payment.handler import liqpay_main
 from tasks.task import task_checker as taskfunel
 from telegrambot import main as tgbot
 
@@ -60,9 +61,9 @@ def payment_endpoint():
 @app.route('/liqpay', methods=['POST'])
 def liqpay_endpoint():
     raw_data = request.get_data()
-    logger.info(raw_data)
-    data = json.loads(raw_data.decode())
+    data = raw_data.decode()
     logger.info(data)
+    liqpay_main(data)
     # sender(data)
     # returned_data = get_response_data(data)
     response = app.response_class(
