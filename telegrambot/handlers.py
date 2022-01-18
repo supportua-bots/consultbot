@@ -304,18 +304,22 @@ def issue_solved_handler(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=context.user_data['ID'],
                              text=resources.chat_ending)
     user_data = check_user(context.user_data['ID'])
+    link = 'https://support.ua/'
     logger.info(user_data)
     if user_data[2] > 0:
-        reply_keyboard = kb.free_consult
+        reply_keyboard = kb.solved_keyboard_generator(
+            kb.solved_free_consult, link)
         reply_text = resources.greeting_message.replace(
             '[counter]', '0')
     elif user_data[1] > 0:
         counter = paid_consults(context.user_data['ID'])
-        reply_keyboard = kb.paid_consult
+        reply_keyboard = kb.solved_keyboard_generator(
+            kb.solved_paid_consult, link)
         reply_text = resources.greeting_message.replace(
             '[counter]', str(counter))
     else:
-        reply_keyboard = kb.buy_consult
+        reply_keyboard = kb.solved_keyboard_generator(
+            kb.solved_buy_consult, link)
         reply_text = resources.greeting_message.replace(
             '[counter]', '0')
     time.sleep(1)

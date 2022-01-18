@@ -193,17 +193,21 @@ def user_message_handler(viber, viber_request):
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
                 user_data = check_user(viber_request.sender.id)
+                link = 'https://support.ua/'
                 logger.info(user_data)
                 if user_data[2] > 0:
-                    reply_keyboard = kb.free_consult
+                    reply_keyboard = kb.solved_keyboard_generator(
+                        kb.solved_free_consult, link)
                     reply_text = resources.free_consult_message
                 elif user_data[1] > 0:
                     counter = paid_consults(chat_id)
-                    reply_keyboard = kb.paid_consult
+                    reply_keyboard = kb.solved_keyboard_generator(
+                        kb.solved_paid_consult, link)
                     reply_text = resources.greeting_message.replace(
                         '[counter]', str(counter))
                 else:
-                    reply_keyboard = kb.buy_consult
+                    reply_keyboard = kb.solved_keyboard_generator(
+                        kb.solved_buy_consult, link)
                     reply_text = resources.greeting_message.replace(
                         '[counter]', '0')
                 time.sleep(1)
