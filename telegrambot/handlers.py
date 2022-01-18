@@ -386,7 +386,7 @@ def buy_consult_handler(update: Update, context: CallbackContext):
     amount = user_data[1]
     reply_keyboard = kb.buy_amount
     reply_text = resources.select_amount.replace(
-        '[counter]', amount)
+        '[counter]', str(amount))
     context.bot.send_message(chat_id=context.user_data['ID'],
                              text=reply_text,
                              reply_markup=reply_keyboard)
