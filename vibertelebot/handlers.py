@@ -256,7 +256,7 @@ def user_message_handler(viber, viber_request):
                 amount = user_data[1]
                 reply_keyboard = kb.buy_amount
                 reply_text = resources.select_amount.replace(
-                    '[counter]', amount)
+                    '[counter]', str(amount))
             # elif text[:8] == 'purchase':
             #     amount = int(text.split('_')[1])
             #     tracking_data['AMOUNT'] = amount
