@@ -382,8 +382,11 @@ def buy_consult_handler(update: Update, context: CallbackContext):
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
         text=f'{update.callback_query.message.text}\nВаш вибір: {choice}')
+    user_data = check_user(update.callback_query.message.chat.id)
+    amount = user_data[1]
     reply_keyboard = kb.buy_amount
-    reply_text = resources.select_amount
+    reply_text = resources.select_amount.replace(
+        '[counter]', amount)
     context.bot.send_message(chat_id=context.user_data['ID'],
                              text=reply_text,
                              reply_markup=reply_keyboard)

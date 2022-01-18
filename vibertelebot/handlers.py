@@ -104,22 +104,26 @@ def user_message_handler(viber, viber_request):
         add_user(viber_request.sender.id, message.contact.phone_number)
         user_data = check_user(viber_request.sender.id)
         logger.info(user_data)
-        if user_data[2] > 0:
-            reply_keyboard = kb.free_consult
-            reply_text = resources.free_consult_message
-        elif user_data[1] > 0:
-            counter = paid_consults(chat_id)
-            reply_keyboard = kb.paid_consult
-            reply_text = resources.greeting_message.replace(
-                '[counter]', str(counter))
+        if user_data:
+            if user_data[2] > 0:
+                reply_keyboard = kb.free_consult
+                reply_text = resources.free_consult_message
+            elif user_data[1] > 0:
+                counter = paid_consults(chat_id)
+                reply_keyboard = kb.paid_consult
+                reply_text = resources.greeting_message.replace(
+                    '[counter]', str(counter))
+            else:
+                reply_keyboard = kb.buy_consult
+                reply_text = resources.greeting_message.replace(
+                    '[counter]', '0')
+            try:
+                open(f'media/{chat_id}/history.txt', 'w').close()
+            except:
+                pass
         else:
-            reply_keyboard = kb.buy_consult
-            reply_text = resources.greeting_message.replace(
-                '[counter]', '0')
-        try:
-            open(f'media/{chat_id}/history.txt', 'w').close()
-        except:
-            pass
+            reply_keyboard = kb.phone_keyboard
+            reply_text = 'За цим номером вже створений інший аккаунт.'
         tracking_data = json.dumps(tracking_data)
         reply = [TextMessage(text=reply_text,
                              keyboard=reply_keyboard,
@@ -248,9 +252,11 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'buy_consult':
+                user_data = check_user(chat_id)
+                amount = user_data[1]
                 reply_keyboard = kb.buy_amount
                 reply_text = resources.select_amount.replace(
-                    '[counter]', '0')
+                    '[counter]', amount)
             # elif text[:8] == 'purchase':
             #     amount = int(text.split('_')[1])
             #     tracking_data['AMOUNT'] = amount

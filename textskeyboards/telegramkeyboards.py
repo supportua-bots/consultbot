@@ -60,11 +60,7 @@ buy_amount = tg_keyboard_constructor([
 def payment_keyboard_generator(items: list, link: str):
     inline_keyboard = [
         [InlineKeyboardButton(text=items[0][0],
-                              url=link)],
-        [InlineKeyboardButton(text=items[1][0],
-                              callback_data=items[1][1])],
-        [InlineKeyboardButton(text=items[2][0],
-                              callback_data=items[2][1])],
+                              url=link)]
 
     ]
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
