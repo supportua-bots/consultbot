@@ -10,7 +10,8 @@ from .handlers import (echo_handler, greetings_handler, menu_handler,
                        operator_handler, chat_handler, issue_solved_handler,
                        free_consult_handler, paid_consult_handler,
                        consult_handler, buy_consult_handler, purchase_handler,
-                       link_handler, payment_completed_handler, phone_handler)
+                       link_handler, payment_completed_handler, phone_handler,
+                       questions_handler)
 from loguru import logger
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -56,6 +57,9 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[
             CommandHandler('start', greetings_handler),
+            CallbackQueryHandler(questions_handler,
+                                 pattern=r'^questions$',
+                                 pass_user_data=True),
             CallbackQueryHandler(menu_handler,
                                  pattern=r'^start$',
                                  pass_user_data=True),
@@ -88,7 +92,7 @@ def main():
                                         pattern=r'^start$',
                                         pass_user_data=True), ],
             MENU: [MessageHandler(Filters.all, menu_handler,
-                                   pass_user_data=True)]
+                                  pass_user_data=True)]
         },
         fallbacks=[
             CommandHandler('cancel', greetings_handler),

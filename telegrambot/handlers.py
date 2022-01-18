@@ -474,3 +474,27 @@ def payment_completed_handler(update: Update, context: CallbackContext):
                              reply_markup=reply_keyboard)
     context.user_data['HISTORY'] += save_message_to_history(reply_text, 'bot')
     return ConversationHandler.END
+
+
+@logger.catch
+def questions_handler(update: Update, context: CallbackContext):
+    if 'HISTORY' not in context.user_data:
+        context.user_data['HISTORY'] = ''
+    choice = choice_definer(update)
+    context.user_data['ID'] = update.callback_query.message.chat.id
+    chat_id = update.callback_query.message.chat.id
+    context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
+    reply_text = resources.faq
+    user_data = check_user(chat_id)
+    logger.info(user_data)
+    if user_data[2] > 0:
+        reply_keyboard = kb.free_consult
+    elif user_data[1] > 0:
+        reply_keyboard = kb.paid_consult
+    else:
+        reply_keyboard = kb.buy_consult
+    context.bot.send_message(chat_id=chat_id,
+                             text=reply_text,
+                             reply_markup=reply_keyboard)
+    context.user_data['HISTORY'] += save_message_to_history(reply_text, 'bot')
+    return ConversationHandler.END
