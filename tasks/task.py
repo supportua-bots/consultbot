@@ -1,6 +1,11 @@
 import time
 import json
-from db_func.database import await_list, plus_wait_counter_viber, plus_wait_counter_telegram, reset_counter_viber, reset_counter_telegram, check_user_telegram, check_user_viber, change_stage_to_chat, paid_consults
+from db_func.database import (await_list, plus_wait_counter_viber,
+                              plus_wait_counter_telegram, reset_counter_viber,
+                              reset_counter_telegram, check_user_telegram,
+                              check_user_viber, change_stage_to_chat_telegram,
+                              change_stage_to_chat_viber, paid_consults_telegram,
+                              paid_consults_viber)
 from viberbot.api.messages.text_message import TextMessage
 from vibertelebot.main import viber
 from textskeyboards import viberkeyboards as kb
@@ -10,21 +15,26 @@ from loguru import logger
 
 
 def send_message_to_user(user_id):
-    change_stage_to_chat(user_id)
     tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
     tracking_data = json.dumps(tracking_data)
     try:
         telegram_check = int(user_id)
         user_data = check_user_telegram(user_id)
+        change_stage_to_chat_telegram(user_id)
     except:
         user_data = check_user_viber(user_id)
+        change_stage_to_chat_viber(user_id)
     if user_data != []:
         logger.info(user_data)
     if user_data[2] > 0:
         reply_keyboard = kb.free_consult
         reply_text = resources.greeting_message
     elif user_data[1] > 0:
-        counter = paid_consults(user_id)
+        try:
+            telegram_check = int(user_id)
+            counter = paid_consults_telegram(user_id)
+        except:
+            counter = paid_consults_viber(user_id)
         reply_keyboard = kb.paid_consult
         reply_text = resources.greeting_message.replace(
             '[counter]', str(counter))
