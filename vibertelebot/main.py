@@ -15,7 +15,7 @@ from vibertelebot.handlers import user_message_handler
 from vibertelebot.utils.tools import keyboard_consctructor
 from textskeyboards import texts as resources
 from textskeyboards import viberkeyboards as kb
-from db_func.database import paid_consults
+from db_func.database import paid_consults_viber
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
