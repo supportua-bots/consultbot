@@ -35,7 +35,7 @@ def create_table():
                         stage TEXT,
                         counter INTEGER,
                         phone TEXT,
-                        chat_id_telegram TEXT,);'''
+                        chat_id_telegram TEXT);'''
     post_sql_query(query)
 
 
