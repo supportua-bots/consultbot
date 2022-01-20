@@ -21,7 +21,7 @@ from viberbot.api.messages.video_message import VideoMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import viberkeyboards as kb
-from db_func.database import add_user_viber, check_user_viber, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
+from db_func.database import add_user_viber, check_user_viber, minus_free_consult_viber, minus_paid_consult_viber, plus_paid_consult_viber, change_stage_to_chat_viber, reset_counter_viber, paid_consults_viber
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -109,7 +109,7 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.free_consult
                 reply_text = resources.free_consult_message
             elif user_data[1] > 0:
-                counter = paid_consults(chat_id)
+                counter = paid_consults_viber(chat_id)
                 reply_keyboard = kb.paid_consult
                 reply_text = resources.greeting_message.replace(
                     '[counter]', str(counter))
@@ -183,7 +183,7 @@ def user_message_handler(viber, viber_request):
                     reply_keyboard = kb.free_consult
                     reply_text = resources.free_consult_message
                 elif user_data[1] > 0:
-                    counter = paid_consults(chat_id)
+                    counter = paid_consults_viber(chat_id)
                     reply_keyboard = kb.paid_consult
                     reply_text = resources.greeting_message.replace(
                         '[counter]', str(counter))
@@ -193,7 +193,7 @@ def user_message_handler(viber, viber_request):
                         '[counter]', '0')
                 time.sleep(1)
             elif text == 'issue_solved':
-                change_stage_to_chat(chat_id)
+                change_stage_to_chat_viber(chat_id)
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
                 user_data = check_user_viber(viber_request.sender.id)
@@ -204,7 +204,7 @@ def user_message_handler(viber, viber_request):
                         kb.solved_free_consult, link)
                     reply_text = resources.free_consult_message
                 elif user_data[1] > 0:
-                    counter = paid_consults(chat_id)
+                    counter = paid_consults_viber(chat_id)
                     reply_keyboard = kb.solved_keyboard_generator(
                         kb.solved_paid_consult, link)
                     reply_text = resources.greeting_message.replace(
@@ -222,7 +222,7 @@ def user_message_handler(viber, viber_request):
                 if user_data[2] > 0:
                     reply_keyboard = kb.free_consult
                 elif user_data[1] > 0:
-                    counter = paid_consults(chat_id)
+                    counter = paid_consults_viber(chat_id)
                     reply_keyboard = kb.paid_consult
                 else:
                     reply_keyboard = kb.buy_consult
@@ -233,12 +233,12 @@ def user_message_handler(viber, viber_request):
                 tracking_data['CHAT_MODE'] = 'on'
                 operator_connection(chat_id, tracking_data,
                                     'Бесплатная консультация')
-                minus_free_consult(chat_id)
+                minus_free_consult_viber(chat_id)
                 reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'consult':
-                change_stage_to_chat(chat_id)
-                reset_counter(chat_id)
+                change_stage_to_chat_viber(chat_id)
+                reset_counter_viber(chat_id)
                 tracking_data['CHAT_MODE'] = 'on'
                 operator_connection(chat_id, tracking_data,
                                     'Уточнение')
@@ -248,7 +248,7 @@ def user_message_handler(viber, viber_request):
                 tracking_data['CHAT_MODE'] = 'on'
                 operator_connection(chat_id, tracking_data,
                                     'Платная консультация')
-                minus_paid_consult(chat_id)
+                minus_paid_consult_viber(chat_id)
                 reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'buy_consult':
@@ -296,7 +296,7 @@ def user_message_handler(viber, viber_request):
                         reply_keyboard = kb.free_consult
                         reply_text = resources.free_consult_message
                     elif user_data[1] > 0:
-                        counter = paid_consults(chat_id)
+                        counter = paid_consults_viber(chat_id)
                         reply_keyboard = kb.paid_consult
                         reply_text = resources.greeting_message.replace(
                             '[counter]', str(counter))

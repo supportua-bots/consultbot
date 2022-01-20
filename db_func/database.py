@@ -82,47 +82,92 @@ def check_user_telegram(chat_id):
 
 
 @logger.catch
-def minus_free_consult(chat_id):
+def minus_free_consult_viber(chat_id):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"chat_id = '{chat_id}';"
+                        f"chat_id_viber = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if rows:
         updated_field = int(rows[0][2]) - 1
-        query = f"UPDATE DATA SET circle_free = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        query = f"UPDATE DATA SET circle_free = '{updated_field}' WHERE chat_id_viber = '{chat_id}';"
         post_sql_query(query)
 
 
 @logger.catch
-def minus_paid_consult(chat_id):
+def minus_free_consult_telegram(chat_id):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"chat_id = '{chat_id}';"
+                        f"chat_id_telegram = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][2]) - 1
+        query = f"UPDATE DATA SET circle_free = '{updated_field}' WHERE chat_id_telegram = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def minus_paid_consult_viber(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id_viber = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if rows:
         updated_field = int(rows[0][1]) - 1
-        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id_viber = '{chat_id}';"
         post_sql_query(query)
 
 
 @logger.catch
-def plus_paid_consult(chat_id, amount):
+def minus_paid_consult_telegram(chat_id):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"chat_id = '{chat_id}';"
+                        f"chat_id_telegram = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][1]) - 1
+        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id_telegram = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def plus_paid_consult_viber(chat_id, amount):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id_viber = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if rows:
         updated_field = int(rows[0][1]) + int(amount)
-        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id_viber = '{chat_id}';"
         post_sql_query(query)
 
 
 @logger.catch
-def change_stage_to_await(chat_id):
-    query = f"UPDATE DATA SET stage = 'await' WHERE chat_id = '{chat_id}';"
+def plus_paid_consult_telegram(chat_id, amount):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id_telegram = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][1]) + int(amount)
+        query = f"UPDATE DATA SET circle_paid = '{updated_field}' WHERE chat_id_telegram = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def change_stage_to_await_viber(chat_id):
+    query = f"UPDATE DATA SET stage = 'await' WHERE chat_id_viber = '{chat_id}';"
     post_sql_query(query)
 
 
 @logger.catch
-def change_stage_to_chat(chat_id):
-    query = f"UPDATE DATA SET stage = 'chat' WHERE chat_id = '{chat_id}';"
+def change_stage_to_await_telegram(chat_id):
+    query = f"UPDATE DATA SET stage = 'await' WHERE chat_id_telegram = '{chat_id}';"
+    post_sql_query(query)
+
+
+@logger.catch
+def change_stage_to_chat_viber(chat_id):
+    query = f"UPDATE DATA SET stage = 'chat' WHERE chat_id_viber = '{chat_id}';"
+    post_sql_query(query)
+
+
+@logger.catch
+def change_stage_to_chat_telegram(chat_id):
+    query = f"UPDATE DATA SET stage = 'chat' WHERE chat_id_telegram = '{chat_id}';"
     post_sql_query(query)
 
 
@@ -134,24 +179,48 @@ def await_list():
 
 
 @logger.catch
-def plus_wait_counter(chat_id):
+def plus_wait_counter_viber(chat_id):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"chat_id = '{chat_id}';"
+                        f"chat_id_viber = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if rows:
         updated_field = int(rows[0][4]) + 1
-        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id_viber = '{chat_id}';"
         post_sql_query(query)
 
 
 @logger.catch
-def reset_counter(chat_id):
-    query = f"UPDATE DATA SET counter = '0' WHERE chat_id = '{chat_id}';"
+def plus_wait_counter_telegram(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id_telegram = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][4]) + 1
+        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id_telegram = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def reset_counter_viber(chat_id):
+    query = f"UPDATE DATA SET counter = '0' WHERE chat_id_viber = '{chat_id}';"
     post_sql_query(query)
 
 
 @logger.catch
-def paid_consults(chat_id):
-    query = f"SELECT * FROM DATA WHERE chat_id = '{chat_id}';"
+def reset_counter_telegram(chat_id):
+    query = f"UPDATE DATA SET counter = '0' WHERE chat_id_telegram = '{chat_id}';"
+    post_sql_query(query)
+
+
+@logger.catch
+def paid_consults_viber(chat_id):
+    query = f"SELECT * FROM DATA WHERE chat_id_viber = '{chat_id}';"
+    rows = post_sql_query(query)
+    return rows[0][1]
+
+
+@logger.catch
+def paid_consults_telegram(chat_id):
+    query = f"SELECT * FROM DATA WHERE chat_id_telegram = '{chat_id}';"
     rows = post_sql_query(query)
     return rows[0][1]

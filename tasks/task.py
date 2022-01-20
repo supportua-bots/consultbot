@@ -1,6 +1,6 @@
 import time
 import json
-from db_func.database import await_list, plus_wait_counter, reset_counter, check_user_telegram, check_user_viber, change_stage_to_chat, paid_consults
+from db_func.database import await_list, plus_wait_counter_viber, plus_wait_counter_telegram, reset_counter_viber, reset_counter_telegram, check_user_telegram, check_user_viber, change_stage_to_chat, paid_consults
 from viberbot.api.messages.text_message import TextMessage
 from vibertelebot.main import viber
 from textskeyboards import viberkeyboards as kb
@@ -45,9 +45,17 @@ def task_checker():
             for item in tasks:
                 if int(item[4]) == 59:
                     send_message_to_user(item[0])
-                    reset_counter(item[0])
+                    try:
+                        telegram_check = int(item[0])
+                        reset_counter_telegram(item[0])
+                    except:
+                        reset_counter_viber(item[0])
                 else:
-                    plus_wait_counter(item[0])
+                    try:
+                        telegram_check = int(item[0])
+                        plus_wait_counter_telegram(item[0])
+                    except:
+                        plus_wait_counter_viber(item[0])
         except Exception as e:
             logger.warning(e)
         finally:

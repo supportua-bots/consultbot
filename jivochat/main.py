@@ -24,7 +24,7 @@ from loguru import logger
 from textskeyboards import texts
 from textskeyboards import viberkeyboards
 from textskeyboards import telegramkeyboards
-from db_func.database import change_stage_to_await
+from db_func.database import change_stage_to_await_viber, change_stage_to_await_telegram
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -85,6 +85,7 @@ def main(data, source):
                 user_id = int(re.findall(
                     f'\[(.*?)\]', data['visitor']['name'])[0])
                 reply_markup = ReplyKeyboardRemove()
+                change_stage_to_await_telegram(user_id)
                 bot.send_message(
                             chat_id=user_id,
                             text=texts.operator_ended_chat,
@@ -94,7 +95,7 @@ def main(data, source):
                     f'\[(.*?)\]', data['visitor']['name'])[0])
                 tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
                 tracking_data = json.dumps(tracking_data)
-                change_stage_to_await(user_id)
+                change_stage_to_await_viber(user_id)
                 viber.send_messages(user_id, [TextMessage(text=texts.operator_ended_chat,
                                                           keyboard=viberkeyboards.clarificational_consult,
                                                           tracking_data=tracking_data)])

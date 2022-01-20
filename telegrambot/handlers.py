@@ -16,7 +16,7 @@ from textskeyboards import texts as resources
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import telegramkeyboards as kb
-from db_func.database import add_user_telegram, check_user_telegram, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
+from db_func.database import add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -99,7 +99,7 @@ def menu_handler(update: Update, context: CallbackContext):
             reply_keyboard = kb.free_consult
             reply_text = resources.free_consult_message
         elif user_data[1] > 0:
-            counter = paid_consults(chat_id)
+            counter = paid_consults_telegram(chat_id)
             reply_keyboard = kb.paid_consult
             reply_text = resources.greeting_message.replace(
                 '[counter]', str(counter))
@@ -227,7 +227,7 @@ def chat_handler(update: Update, context: CallbackContext):
             reply_text = resources.greeting_message.replace(
                 '[counter]', '0')
         elif user_data[1] > 0:
-            counter = paid_consults(update.message.from_user.id)
+            counter = paid_consults_telegram(update.message.from_user.id)
             reply_text = resources.greeting_message.replace(
                 '[counter]', str(counter))
         else:
@@ -267,7 +267,7 @@ def echo_handler(update: Update, context: CallbackContext):
             reply_text = resources.greeting_message.replace(
                 '[counter]', '0')
         elif user_data[1] > 0:
-            counter = paid_consults(update.message.from_user.id)
+            counter = paid_consults_telegram(update.message.from_user.id)
             reply_text = resources.greeting_message.replace(
                 '[counter]', str(counter))
         else:
@@ -290,7 +290,7 @@ def issue_solved_handler(update: Update, context: CallbackContext):
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
     context.user_data['ID'] = update.callback_query.message.chat.id
-    change_stage_to_chat(context.user_data['ID'])
+    change_stage_to_chat_telegram(context.user_data['ID'])
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
@@ -306,7 +306,7 @@ def issue_solved_handler(update: Update, context: CallbackContext):
         reply_text = resources.greeting_message.replace(
             '[counter]', '0')
     elif user_data[1] > 0:
-        counter = paid_consults(context.user_data['ID'])
+        counter = paid_consults_telegram(context.user_data['ID'])
         reply_keyboard = kb.solved_keyboard_generator(
             kb.solved_paid_consult, link)
         reply_text = resources.greeting_message.replace(
@@ -330,13 +330,13 @@ def free_consult_handler(update: Update, context: CallbackContext):
         context.user_data['HISTORY'] = ''
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
-    minus_free_consult(update.callback_query.message.chat.id)
+    minus_free_consult_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
                           'TelegramUser',
                           'Бесплатная консультация',
                           'telegram')
     result = operator_handler(update, context)
-    return result
+    return CHAT
 
 
 @logger.catch
@@ -345,13 +345,13 @@ def paid_consult_handler(update: Update, context: CallbackContext):
         context.user_data['HISTORY'] = ''
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
-    minus_paid_consult(update.callback_query.message.chat.id)
+    minus_paid_consult_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
                           'TelegramUser',
                           'Уточнение',
                           'telegram')
     result = operator_handler(update, context)
-    return result
+    return CHAT
 
 
 @logger.catch
@@ -360,13 +360,13 @@ def consult_handler(update: Update, context: CallbackContext):
         context.user_data['HISTORY'] = ''
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
-    reset_counter(update.callback_query.message.chat.id)
+    reset_counter_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
                           'TelegramUser',
                           'Платная консультация',
                           'telegram')
     result = operator_handler(update, context)
-    return result
+    return CHAT
 
 
 @logger.catch
@@ -374,7 +374,7 @@ def buy_consult_handler(update: Update, context: CallbackContext):
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
     context.user_data['ID'] = update.callback_query.message.chat.id
-    change_stage_to_chat(context.user_data['ID'])
+    change_stage_to_chat_telegram(context.user_data['ID'])
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
@@ -396,7 +396,7 @@ def purchase_handler(update: Update, context: CallbackContext):
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
     context.user_data['ID'] = update.callback_query.message.chat.id
-    change_stage_to_chat(context.user_data['ID'])
+    change_stage_to_chat_telegram(context.user_data['ID'])
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
@@ -426,7 +426,7 @@ def link_handler(update: Update, context: CallbackContext):
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
     context.user_data['ID'] = update.callback_query.message.chat.id
-    change_stage_to_chat(context.user_data['ID'])
+    change_stage_to_chat_telegram(context.user_data['ID'])
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
@@ -459,7 +459,7 @@ def payment_completed_handler(update: Update, context: CallbackContext):
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
     context.user_data['ID'] = update.callback_query.message.chat.id
-    change_stage_to_chat(context.user_data['ID'])
+    change_stage_to_chat_telegram(context.user_data['ID'])
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
