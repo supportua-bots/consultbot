@@ -23,7 +23,7 @@ from vibertelebot.utils.tools import keyboard_consctructor
 from vibertelebot.main import viber
 from flask import Flask, request, Response, json, jsonify
 from loguru import logger
-from db_func.database import plus_paid_consult, check_user_viber, check_user_telegram
+from db_func.database import plus_paid_consult_viber, plus_paid_consult_telegram, check_user_viber, check_user_telegram
 from textskeyboards import texts as resources
 from textskeyboards import viberkeyboards as kb
 from liqpay.liqpay import LiqPay
@@ -54,8 +54,8 @@ def main(data):
     amount = int(data['products'][0]['count'])
     payment_status = data['transactionStatus']
     if payment_status == 'Approved':
-        plus_paid_consult(chat_id, amount)
         if platform == 'viber':
+            plus_paid_consult_viber(chat_id, amount)
             tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
             tracking_data = json.dumps(tracking_data)
             user_data = check_user_viber(chat_id)
@@ -71,6 +71,7 @@ def main(data):
                                                       keyboard=reply_keyboard,
                                                       tracking_data=tracking_data)])
         else:
+            plus_paid_consult_telegram(chat_id, amount)
             user_data = check_user_telegram(chat_id)
             logger.info(user_data)
             if user_data[1] > 0:
@@ -101,8 +102,8 @@ def liqpay_main(data):
     payment_status = str(clean_data['status'])
     logger.info(clean_data)
     if payment_status == 'success':
-        plus_paid_consult(chat_id, amount)
         if platform == 'viber':
+            plus_paid_consult_viber(chat_id, amount)
             tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
             tracking_data = json.dumps(tracking_data)
             user_data = check_user_viber(chat_id)
@@ -118,6 +119,7 @@ def liqpay_main(data):
                                                       keyboard=reply_keyboard,
                                                       tracking_data=tracking_data)])
         else:
+            plus_paid_consult_telegram(chat_id, amount)
             user_data = check_user_telegram(chat_id)
             logger.info(user_data)
             if user_data[1] > 0:
