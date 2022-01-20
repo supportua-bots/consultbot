@@ -1,6 +1,6 @@
 import time
 import json
-from db_func.database import await_list, plus_wait_counter, reset_counter, check_user, change_stage_to_chat, paid_consults
+from db_func.database import await_list, plus_wait_counter, reset_counter, check_user_telegram, check_user_viber, change_stage_to_chat, paid_consults
 from viberbot.api.messages.text_message import TextMessage
 from vibertelebot.main import viber
 from textskeyboards import viberkeyboards as kb
@@ -13,7 +13,11 @@ def send_message_to_user(user_id):
     change_stage_to_chat(user_id)
     tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
     tracking_data = json.dumps(tracking_data)
-    user_data = check_user(user_id)
+    try:
+        telegram_check = int(user_id)
+        user_data = check_user_telegram(user_id)
+    except:
+        user_data = check_user_viber(user_id)
     if user_data != []:
         logger.info(user_data)
     if user_data[2] > 0:
