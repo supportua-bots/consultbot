@@ -97,8 +97,7 @@ def menu_handler(update: Update, context: CallbackContext):
     if user_data:
         if user_data[2] > 0:
             reply_keyboard = kb.free_consult
-            reply_text = resources.greeting_message.replace(
-                '[counter]', '0')
+            reply_text = resources.free_consult_message
         elif user_data[1] > 0:
             counter = paid_consults(chat_id)
             reply_keyboard = kb.paid_consult
