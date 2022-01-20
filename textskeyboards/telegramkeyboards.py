@@ -22,6 +22,20 @@ buy_consult = tg_keyboard_constructor([
             ('Популярні питання ❓', 'questions')
             ])
 
+
+solo_free_consult = tg_keyboard_constructor([
+            ('Під’єднати оператора 👨‍💻', 'free_consult')
+            ])
+
+solo_paid_consult = tg_keyboard_constructor([
+            ('Під’єднати оператора 👨‍💻', 'paid_consult')
+            ])
+
+solo_buy_consult = tg_keyboard_constructor([
+            ('Придбати пакет консультацій', 'buy_consult')
+            ])
+
+
 solved_free_consult = [
             ('Залишити відгук 🚀', ''),
             ('Під’єднати оператора 👨‍💻', 'free_consult'),

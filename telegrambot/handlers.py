@@ -16,7 +16,7 @@ from textskeyboards import texts as resources
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import telegramkeyboards as kb
-from db_func.database import add_user, check_user, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
+from db_func.database import add_user_telegram, check_user_telegram, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -91,8 +91,8 @@ def menu_handler(update: Update, context: CallbackContext):
     except:
         phone = None
     if phone:
-        add_user(str(chat_id), phone)
-    user_data = check_user(chat_id)
+        add_user_telegram(str(chat_id), phone)
+    user_data = check_user_telegram(chat_id)
     logger.info(user_data)
     if user_data:
         if user_data[2] > 0:
@@ -109,13 +109,8 @@ def menu_handler(update: Update, context: CallbackContext):
             reply_text = resources.greeting_message.replace(
                 '[counter]', '0')
     else:
-        contact_keyboard = [[KeyboardButton('Поділитися номером телефону',
-                                            request_contact=True,)]]
-
-        reply_keyboard = ReplyKeyboardMarkup(keyboard=contact_keyboard,
-                                             resize_keyboard=True,
-                                             one_time_keyboard=True)
-        reply_text = 'За цим номером вже створений інший аккаунт.'
+        state = phone_handler(update, context)
+        return state
     try:
         request = update.callback_query.message
         choice = choice_definer(update)
@@ -227,7 +222,7 @@ def chat_handler(update: Update, context: CallbackContext):
                                  text=resources.chat_ending,
                                  reply_markup=reply_markup)
         time.sleep(1)
-        user_data = check_user(update.message.from_user.id)
+        user_data = check_user_telegram(update.message.from_user.id)
         logger.info(user_data)
         if user_data[2] > 0:
             reply_text = resources.greeting_message.replace(
@@ -267,7 +262,7 @@ def echo_handler(update: Update, context: CallbackContext):
                                  text=resources.chat_ending,
                                  reply_markup=reply_markup)
         time.sleep(1)
-        user_data = check_user(update.message.from_user.id)
+        user_data = check_user_telegram(update.message.from_user.id)
         logger.info(user_data)
         if user_data[2] > 0:
             reply_text = resources.greeting_message.replace(
@@ -303,7 +298,7 @@ def issue_solved_handler(update: Update, context: CallbackContext):
         text=f'{update.callback_query.message.text}\nВаш вибір: {choice}')
     context.bot.send_message(chat_id=context.user_data['ID'],
                              text=resources.chat_ending)
-    user_data = check_user(context.user_data['ID'])
+    user_data = check_user_telegram(context.user_data['ID'])
     link = 'https://support.ua/'
     logger.info(user_data)
     if user_data[2] > 0:
@@ -341,7 +336,8 @@ def free_consult_handler(update: Update, context: CallbackContext):
                           'TelegramUser',
                           'Бесплатная консультация',
                           'telegram')
-    operator_handler(update, context)
+    result = operator_handler(update, context)
+    return result
 
 
 @logger.catch
@@ -355,7 +351,8 @@ def paid_consult_handler(update: Update, context: CallbackContext):
                           'TelegramUser',
                           'Уточнение',
                           'telegram')
-    operator_handler(update, context)
+    result = operator_handler(update, context)
+    return result
 
 
 @logger.catch
@@ -369,7 +366,8 @@ def consult_handler(update: Update, context: CallbackContext):
                           'TelegramUser',
                           'Платная консультация',
                           'telegram')
-    operator_handler(update, context)
+    result = operator_handler(update, context)
+    return result
 
 
 @logger.catch
@@ -382,7 +380,7 @@ def buy_consult_handler(update: Update, context: CallbackContext):
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     update.callback_query.edit_message_text(
         text=f'{update.callback_query.message.text}\nВаш вибір: {choice}')
-    user_data = check_user(update.callback_query.message.chat.id)
+    user_data = check_user_telegram(update.callback_query.message.chat.id)
     amount = user_data[1]
     reply_keyboard = kb.buy_amount
     reply_text = resources.select_amount.replace(
@@ -406,7 +404,7 @@ def purchase_handler(update: Update, context: CallbackContext):
         text=f'{update.callback_query.message.text}\nВаш вибір: {choice}')
     amount = int(choice)
     context.user_data['AMOUNT'] = amount
-    phone = check_user(str(context.user_data['ID']))[5]
+    phone = check_user_telegram(str(context.user_data['ID']))[5]
     link = get_liqpay_link(amount, str(
         context.user_data['ID']), 'telegram', phone)
     reply_keyboard = kb.payment_keyboard_generator(
@@ -438,7 +436,7 @@ def link_handler(update: Update, context: CallbackContext):
         amount = context.user_data['AMOUNT']
     else:
         amount = 1
-    phone = check_user(str(context.user_data['ID']))[5]
+    phone = check_user_telegram(str(context.user_data['ID']))[5]
     link = get_liqpay_link(amount, str(
         context.user_data['ID']), 'telegram', phone)
     context.user_data['LINK'] = link
@@ -485,14 +483,14 @@ def questions_handler(update: Update, context: CallbackContext):
     chat_id = update.callback_query.message.chat.id
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     reply_text = resources.faq
-    user_data = check_user(chat_id)
+    user_data = check_user_telegram(chat_id)
     logger.info(user_data)
     if user_data[2] > 0:
-        reply_keyboard = kb.free_consult
+        reply_keyboard = kb.solo_free_consult
     elif user_data[1] > 0:
-        reply_keyboard = kb.paid_consult
+        reply_keyboard = kb.solo_paid_consult
     else:
-        reply_keyboard = kb.buy_consult
+        reply_keyboard = kb.solo_buy_consult
     context.bot.send_message(chat_id=chat_id,
                              text=reply_text,
                              reply_markup=reply_keyboard)

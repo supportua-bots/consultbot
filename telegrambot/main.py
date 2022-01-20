@@ -56,7 +56,7 @@ def main():
     # Навесить обработчики команд
     conv_handler = ConversationHandler(
         entry_points=[
-            CommandHandler('start', greetings_handler),
+            CommandHandler('start', menu_handler),
             CallbackQueryHandler(questions_handler,
                                  pattern=r'^questions$',
                                  pass_user_data=True),

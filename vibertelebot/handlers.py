@@ -21,7 +21,7 @@ from viberbot.api.messages.video_message import VideoMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import viberkeyboards as kb
-from db_func.database import add_user, check_user, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
+from db_func.database import add_user_viber, check_user_viber, minus_free_consult, minus_paid_consult, plus_paid_consult, change_stage_to_chat, reset_counter, paid_consults
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -101,8 +101,8 @@ def user_message_handler(viber, viber_request):
         # Handling reply after user shared his contact infromation
         tracking_data['PHONE'] = message.contact.phone_number
         print(message.contact)
-        add_user(viber_request.sender.id, message.contact.phone_number)
-        user_data = check_user(viber_request.sender.id)
+        add_user_viber(viber_request.sender.id, message.contact.phone_number)
+        user_data = check_user_viber(viber_request.sender.id)
         logger.info(user_data)
         if user_data:
             if user_data[2] > 0:
@@ -177,7 +177,7 @@ def user_message_handler(viber, viber_request):
                                       'viber')
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
-                user_data = check_user(viber_request.sender.id)
+                user_data = check_user_viber(viber_request.sender.id)
                 logger.info(user_data)
                 if user_data[2] > 0:
                     reply_keyboard = kb.free_consult
@@ -196,7 +196,7 @@ def user_message_handler(viber, viber_request):
                 change_stage_to_chat(chat_id)
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
-                user_data = check_user(viber_request.sender.id)
+                user_data = check_user_viber(viber_request.sender.id)
                 link = 'https://support.ua/'
                 logger.info(user_data)
                 if user_data[2] > 0:
@@ -217,7 +217,7 @@ def user_message_handler(viber, viber_request):
                 time.sleep(1)
             elif text == 'questions':
                 reply_text = resources.faq
-                user_data = check_user(viber_request.sender.id)
+                user_data = check_user_viber(viber_request.sender.id)
                 logger.info(user_data)
                 if user_data[2] > 0:
                     reply_keyboard = kb.free_consult
@@ -252,7 +252,7 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'buy_consult':
-                user_data = check_user(chat_id)
+                user_data = check_user_viber(chat_id)
                 amount = user_data[1]
                 reply_keyboard = kb.buy_amount
                 reply_text = resources.select_amount.replace(
@@ -267,7 +267,7 @@ def user_message_handler(viber, viber_request):
             elif text[:8] == 'purchase':
                 amount = int(text.split('_')[1])
                 tracking_data['AMOUNT'] = amount
-                phone = check_user(chat_id)[5]
+                phone = check_user_viber(chat_id)[5]
                 link = get_liqpay_link(amount, chat_id, 'viber', phone)
                 reply_keyboard = kb.payment_keyboard_generator(
                     kb.payment_proceed, link)
@@ -277,7 +277,7 @@ def user_message_handler(viber, viber_request):
                     amount = tracking_data['AMOUNT']
                 else:
                     amount = 1
-                phone = check_user(chat_id)[5]
+                phone = check_user_viber(chat_id)[5]
                 link = get_liqpay_link(amount, chat_id, 'viber', phone)
                 tracking_data['LINK'] = link
                 reply_keyboard = kb.payment_keyboard_generator(
@@ -289,8 +289,21 @@ def user_message_handler(viber, viber_request):
             elif text[:5] == 'https':
                 return logger.info('reply URL')
             else:
-                reply_keyboard = kb.phone_keyboard
-                reply_text = resources.phone_message
+                user_data = check_user_viber(chat_id)
+                logger.info(user_data)
+                if user_data:
+                    if user_data[2] > 0:
+                        reply_keyboard = kb.free_consult
+                        reply_text = resources.free_consult_message
+                    elif user_data[1] > 0:
+                        counter = paid_consults(chat_id)
+                        reply_keyboard = kb.paid_consult
+                        reply_text = resources.greeting_message.replace(
+                            '[counter]', str(counter))
+                    else:
+                        reply_keyboard = kb.buy_consult
+                        reply_text = resources.greeting_message.replace(
+                            '[counter]', '0')
             save_message_to_history(reply_text, 'bot', chat_id)
             logger.info(tracking_data)
             tracking_data = json.dumps(tracking_data)

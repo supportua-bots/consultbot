@@ -29,29 +29,54 @@ def post_sql_query(sql_query):
 @logger.catch
 def create_table():
     query = '''CREATE TABLE IF NOT EXISTS DATA
-                        (chat_id TEXT,
+                        (chat_id_viber TEXT,
                         circle_paid INTEGER,
                         circle_free INTEGER,
                         stage TEXT,
                         counter INTEGER,
-                        phone TEXT);'''
+                        phone TEXT,
+                        chat_id_telegram TEXT,);'''
     post_sql_query(query)
 
 
 @logger.catch
-def add_user(chat_id, phone):
+def add_user_viber(chat_id, phone):
     sql_selection = f"SELECT * FROM DATA WHERE "\
                         f"phone = '{phone}';"
     rows = post_sql_query(sql_selection)
     if not rows:
-        query = f"INSERT INTO DATA (chat_id, circle_paid, circle_free, stage, counter, phone) VALUES ('{chat_id}', '0', '1', 'chat', '0', '{phone}');"
+        query = f"INSERT INTO DATA (chat_id_viber, circle_paid, circle_free, stage, counter, phone) VALUES ('{chat_id}', '0', '1', 'chat', '0', '{phone}');"
+        logger.info(post_sql_query(query))
+    else:
+        query = f"UPDATE DATA SET chat_id_viber = '{chat_id}' WHERE phone = '{phone}';"
         logger.info(post_sql_query(query))
 
 
 @logger.catch
-def check_user(chat_id):
+def add_user_telegram(chat_id, phone):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"chat_id = '{chat_id}';"
+                        f"phone = '{phone}';"
+    rows = post_sql_query(sql_selection)
+    if not rows:
+        query = f"INSERT INTO DATA (chat_id_telegram, circle_paid, circle_free, stage, counter, phone) VALUES ('{chat_id}', '0', '1', 'chat', '0', '{phone}');"
+        logger.info(post_sql_query(query))
+    else:
+        query = f"UPDATE DATA SET chat_id_telegram = '{chat_id}' WHERE phone = '{phone}';"
+        logger.info(post_sql_query(query))
+
+
+@logger.catch
+def check_user_viber(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id_viber = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    return rows[0]
+
+
+@logger.catch
+def check_user_telegram(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id_telegram = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     return rows[0]
 

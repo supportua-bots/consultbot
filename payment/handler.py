@@ -23,7 +23,7 @@ from vibertelebot.utils.tools import keyboard_consctructor
 from vibertelebot.main import viber
 from flask import Flask, request, Response, json, jsonify
 from loguru import logger
-from db_func.database import plus_paid_consult, check_user
+from db_func.database import plus_paid_consult, check_user_viber, check_user_telegram
 from textskeyboards import texts as resources
 from textskeyboards import viberkeyboards as kb
 from liqpay.liqpay import LiqPay
@@ -58,7 +58,7 @@ def main(data):
         if platform == 'viber':
             tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
             tracking_data = json.dumps(tracking_data)
-            user_data = check_user(chat_id)
+            user_data = check_user_viber(chat_id)
             logger.info(user_data)
             if user_data[1] > 0:
                 reply_keyboard = kb.paid_consult
@@ -71,7 +71,7 @@ def main(data):
                                                       keyboard=reply_keyboard,
                                                       tracking_data=tracking_data)])
         else:
-            user_data = check_user(chat_id)
+            user_data = check_user_telegram(chat_id)
             logger.info(user_data)
             if user_data[1] > 0:
                 reply_keyboard = tgkb.paid_consult
@@ -105,7 +105,7 @@ def liqpay_main(data):
         if platform == 'viber':
             tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
             tracking_data = json.dumps(tracking_data)
-            user_data = check_user(chat_id)
+            user_data = check_user_viber(chat_id)
             logger.info(user_data)
             if user_data[1] > 0:
                 reply_keyboard = kb.paid_consult
@@ -118,7 +118,7 @@ def liqpay_main(data):
                                                       keyboard=reply_keyboard,
                                                       tracking_data=tracking_data)])
         else:
-            user_data = check_user(chat_id)
+            user_data = check_user_telegram(chat_id)
             logger.info(user_data)
             if user_data[1] > 0:
                 reply_keyboard = tgkb.paid_consult
