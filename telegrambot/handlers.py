@@ -335,7 +335,7 @@ def free_consult_handler(update: Update, context: CallbackContext):
                           'TelegramUser',
                           'Бесплатная консультация',
                           'telegram')
-    result = operator_handler(update, context)
+    operator_handler(update, context)
     return CHAT
 
 
@@ -350,7 +350,7 @@ def paid_consult_handler(update: Update, context: CallbackContext):
                           'TelegramUser',
                           'Уточнение',
                           'telegram')
-    result = operator_handler(update, context)
+    operator_handler(update, context)
     return CHAT
 
 
@@ -365,7 +365,7 @@ def consult_handler(update: Update, context: CallbackContext):
                           'TelegramUser',
                           'Платная консультация',
                           'telegram')
-    result = operator_handler(update, context)
+    operator_handler(update, context)
     return CHAT
 
 

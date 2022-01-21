@@ -40,16 +40,16 @@ def send_message(user_id, name, text, source):
     # }
     input = {
             "sender": {
-                "id": "19876543210",
-                "name": "Тест тестерович",
-                "photo": "example.com/me.jpg",
-                "url": "example.com/",
-                "phone": "+7(958)100-32-91",
-                "email": "me@example.com",
-                "invite": "Здравствуйте! Это тест"
+            "id": "19876543210",
+            "name": "Тест тестерович",
+            "photo": "example.com/me.jpg",
+            "url": "example.com/",
+            "phone": "+7(958)100-32-91",
+            "email": "me@example.com",
+            "invite": "Здравствуйте! Это тест"
             },
             "message": {
-                "type": "start"
+            "type": "start"
             }
             }
     logger.info(input)
