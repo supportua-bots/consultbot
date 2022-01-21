@@ -140,6 +140,22 @@ def solved_keyboard_generator(items, link):
                      "ReplyType": "message",
                      "OpenURLType": "internal",
                      "Text": items[0][0]},
+                    {"Columns": 6,
+                     "Rows": 1,
+                     "BgColor": MAIN_COLOR,
+                     "BgLoop": True,
+                     "ActionType": "reply",
+                     "ActionBody": items[1][1],
+                     "ReplyType": "message",
+                     "Text": items[1][0]},
+                    {"Columns": 6,
+                     "Rows": 1,
+                     "BgColor": MAIN_COLOR,
+                     "BgLoop": True,
+                     "ActionType": "reply",
+                     "ActionBody": items[2][1],
+                     "ReplyType": "message",
+                     "Text": items[2][0]}]
                     ]
     }
     return keyboard
