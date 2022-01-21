@@ -155,7 +155,7 @@ def solved_keyboard_generator(items, link):
                      "ActionType": "reply",
                      "ActionBody": items[2][1],
                      "ReplyType": "message",
-                     "Text": items[2][0]}]
+                     "Text": items[2][0]}
                     ]
     }
     return keyboard
