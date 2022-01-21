@@ -298,7 +298,7 @@ def issue_solved_handler(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=context.user_data['ID'],
                              text=resources.chat_ending)
     user_data = check_user_telegram(context.user_data['ID'])
-    link = 'https://support.ua/'
+    link = os.getenv('FEEDBACK_LINK')
     logger.info(user_data)
     if user_data[2] > 0:
         reply_keyboard = kb.solved_keyboard_generator(

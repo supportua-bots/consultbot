@@ -197,7 +197,7 @@ def user_message_handler(viber, viber_request):
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
                 user_data = check_user_viber(viber_request.sender.id)
-                link = 'https://support.ua/'
+                link = os.getenv('FEEDBACK_LINK')
                 logger.info(user_data)
                 if user_data[2] > 0:
                     reply_keyboard = kb.solved_keyboard_generator(
