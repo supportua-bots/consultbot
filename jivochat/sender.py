@@ -38,15 +38,15 @@ def send_message(user_id, name, text, source):
                 "text": text
             }
     }
-    print(input)
-    print(URL)
+    logger.info(input)
+    logger.info(URL)
     x = requests.post(URL,
                       json=input,
                       headers={'content-type': 'application/json'})
     try:
-        print(x.json())
+        logger.info(x.json())
     except:
-        print(x.text)
+        logger.info(x.text)
 
 
 @logger.catch
