@@ -25,19 +25,33 @@ def send_message(user_id, name, text, source):
         URL = TELEGRAM_URL
     else:
         URL = VIBER_URL
+    # input = {
+    #     "sender":
+    #         {
+    #             "id": str(user_id),
+    #             "name": f'{name} [{user_id}]',
+    #         },
+    #         "message":
+    #         {
+    #             "type": "text",
+    #             "id": "customer_message_id",
+    #             "text": text
+    #         }
+    # }
     input = {
-        "sender":
-            {
-                "id": str(user_id),
-                "name": f'{name} [{user_id}]',
+            "sender": {
+            "id": "19876543210",
+            "name": "Тест тестерович",
+            "photo": "example.com/me.jpg",
+            "url": "example.com/",
+            "phone": "+7(958)100-32-91",
+            "email": "me@example.com",
+            "invite": "Здравствуйте! Это тест"
             },
-            "message":
-            {
-                "type": "text",
-                "id": "customer_message_id",
-                "text": text
+            "message": {
+            "type": "start"
             }
-    }
+            }
     logger.info(input)
     logger.info(URL)
     x = requests.post(URL,
