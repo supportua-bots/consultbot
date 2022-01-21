@@ -220,12 +220,12 @@ def user_message_handler(viber, viber_request):
                 user_data = check_user_viber(viber_request.sender.id)
                 logger.info(user_data)
                 if user_data[2] > 0:
-                    reply_keyboard = kb.free_consult
+                    reply_keyboard = kb.solo_free_consult
                 elif user_data[1] > 0:
                     counter = paid_consults_viber(chat_id)
-                    reply_keyboard = kb.paid_consult
+                    reply_keyboard = kb.solo_paid_consult
                 else:
-                    reply_keyboard = kb.buy_consult
+                    reply_keyboard = kb.solo_buy_consult
             elif text == 'start':
                 reply_keyboard = kb.phone_keyboard
                 reply_text = resources.phone_message

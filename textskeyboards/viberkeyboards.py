@@ -51,6 +51,19 @@ solved_buy_consult = [
             ]
 
 
+solo_free_consult = [
+            ('Під’єднати оператора 👨‍💻', 'free_consult', ''),
+            ]
+
+solo_paid_consult = [
+            ('Під’єднати оператора 👨‍💻', 'paid_consult', ''),
+            ]
+
+solo_buy_consult = [
+            ('Придбати пакет консультацій', 'buy_consult', ''),
+            ]
+
+
 end_chat_keyboard = keyboard_consctructor([
             ('Завершити чат', 'end_chat', '')
             ])
