@@ -131,23 +131,5 @@ def send_document(user_id, name, file, filename, source):
 
 
 if __name__ == '__main__':
-    URL = 'https://wh.jivosite.com/IF6YK0nYgC56npYB/acdHNf3xhl'
-    input = {
-        "sender":
-        {
-            "id": "12345",
-            "name": "John Doe"
-        },
-        "message":
-        {
-            "type": "photo",
-            "file": "https://api.telegram.org/file/bot1831293641:AAErIH3bFXlhn7FStlk3A7Q0zbyhpgFKXCI/photos/file_100.jpg",
-            "file_name": "150.png"
-        }
-        }
-    logger.info(input)
-    logger.info(URL)
-    x = requests.post(URL,
-                      json=input,
-                      headers={'content-type': 'application/json'})
-    logger.info(x.text)
+    URL = 'https://wh.jivosite.com/IF6YK0nYgC56npYB/DCall6BR1M'
+    send_message(324234234, "Test", "text", "telegram")
