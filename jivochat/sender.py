@@ -42,8 +42,8 @@ def send_message(user_id, name, text, source):
             "sender": {
             "id": "19876543210",
             "name": "Тест тестерович",
-            "photo": "example.com/me.jpg",
-            "url": "example.com/",
+            "photo": "https://example.com/me.jpg",
+            "url": "https://example.com/",
             "phone": "+7(958)100-32-91",
             "email": "me@example.com",
             "invite": "Здравствуйте! Это тест"
