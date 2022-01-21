@@ -43,6 +43,7 @@ def send_message(user_id, name, text, source):
     x = requests.post(URL,
                       json=input,
                       headers={'content-type': 'application/json'})
+    logger.info(x.status_code)
     try:
         logger.info(x.json())
     except:
