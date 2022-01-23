@@ -40,18 +40,18 @@ def send_message(user_id, name, text, source):
     # }
     input = {
             "sender": {
-            "id": "19876543210",
-            "name": "Тест тестерович",
-            "photo": "https://example.com/me.jpg",
-            "url": "https://example.com/",
-            "phone": "+7(958)100-32-91",
-            "email": "me@example.com",
-            "invite": "Здравствуйте! Это тест"
+                "id": "1987654321324234",
+                "name": "Тест тестерович",
+                "photo": "https://example.com/me.jpg",
+                "url": "https://example.com/",
+                "phone": "+7(958)100-32-91",
+                "email": "me@example.com",
+                "invite": "Здравствуйте! Это тест"
             },
             "message": {
-            "type": "text",
-            "id": "0001",
-            "text": "Добрый день!"
+                "type": "text",
+                "id": "0001",
+                "text": "Добрый день!"
             }
             }
 
