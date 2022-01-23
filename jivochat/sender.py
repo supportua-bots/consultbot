@@ -49,9 +49,12 @@ def send_message(user_id, name, text, source):
             "invite": "Здравствуйте! Это тест"
             },
             "message": {
-            "type": "start"
+            "type": "text",
+            "id": "0001",
+            "text": "Добрый день!"
             }
             }
+
     logger.info(input)
     logger.info(URL)
     x = requests.post(URL,
