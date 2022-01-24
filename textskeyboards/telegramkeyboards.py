@@ -18,7 +18,7 @@ paid_consult = tg_keyboard_constructor([
             ])
 
 buy_consult = tg_keyboard_constructor([
-            ('Придбати пакет консультацій', 'buy_consult'),
+            ('Під’єднати оператора 👨', 'buy_consult'),
             ('Популярні питання ❓', 'questions')
             ])
 
@@ -32,7 +32,7 @@ solo_paid_consult = tg_keyboard_constructor([
             ])
 
 solo_buy_consult = tg_keyboard_constructor([
-            ('Придбати пакет консультацій', 'buy_consult')
+            ('Під’єднати оператора 👨', 'buy_consult')
             ])
 
 
@@ -50,7 +50,7 @@ solved_paid_consult = [
 
 solved_buy_consult = [
             ('Залишити відгук 🚀', ''),
-            ('Придбати пакет консультацій', 'buy_consult'),
+            ('Під’єднати оператора 👨', 'buy_consult'),
             ('Популярні питання ❓', 'questions')
             ]
 
