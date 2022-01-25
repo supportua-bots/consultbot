@@ -35,7 +35,7 @@ def send_message(user_id, name, text, source):
             {
                 "type": "text",
                 "id": "customer_message_id",
-                "text": text
+                "text": str(text)
             }
     }
     # input = {

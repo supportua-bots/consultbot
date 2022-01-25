@@ -217,25 +217,28 @@ def chat_handler(update: Update, context: CallbackContext):
                               'TelegramUser',
                               jivosource.user_ended_chat,
                               'telegram')
-        context.bot.send_message(chat_id=update.message.from_user.id,
-                                 text=resources.chat_ending,
-                                 reply_markup=reply_markup)
-        time.sleep(1)
         user_data = check_user_telegram(update.message.from_user.id)
         logger.info(user_data)
+        link = os.getenv('FEEDBACK_LINK')
         if user_data[2] > 0:
-            reply_text = resources.greeting_message.replace(
+            reply_text = resources.user_finished.replace(
                 '[counter]', '0')
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solved_free_consult, link)
         elif user_data[1] > 0:
             counter = paid_consults_telegram(update.message.from_user.id)
-            reply_text = resources.greeting_message.replace(
+            reply_text = resources.user_finished.replace(
                 '[counter]', str(counter))
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solo_paid_consult, link)
         else:
-            reply_text = resources.greeting_message.replace(
+            reply_text = resources.user_finished.replace(
                 '[counter]', '0')
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solo_buy_consult, link)
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=reply_text,
-                                 reply_markup=kb.clarificational_consult)
+                                 reply_markup=reply_keyboard)
         return ConversationHandler.END
     else:
         jivochat.send_message(update.message.from_user.id,
@@ -257,29 +260,52 @@ def echo_handler(update: Update, context: CallbackContext):
                               'TelegramUser',
                               jivosource.user_ended_chat,
                               'telegram')
-        context.bot.send_message(chat_id=update.message.from_user.id,
-                                 text=resources.chat_ending,
-                                 reply_markup=reply_markup)
-        time.sleep(1)
+        # context.bot.send_message(chat_id=update.message.from_user.id,
+        #                          text=resources.chat_ending,
+        #                          reply_markup=reply_markup)
+        # time.sleep(1)
         user_data = check_user_telegram(update.message.from_user.id)
         logger.info(user_data)
+        link = os.getenv('FEEDBACK_LINK')
         if user_data[2] > 0:
-            reply_text = resources.greeting_message.replace(
+            reply_text = resources.user_finished.replace(
                 '[counter]', '0')
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solved_free_consult, link)
         elif user_data[1] > 0:
             counter = paid_consults_telegram(update.message.from_user.id)
-            reply_text = resources.greeting_message.replace(
+            reply_text = resources.user_finished.replace(
                 '[counter]', str(counter))
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solo_paid_consult, link)
         else:
-            reply_text = resources.greeting_message.replace(
+            reply_text = resources.user_finished.replace(
                 '[counter]', '0')
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solo_buy_consult, link)
+        context.bot.send_message(chat_id=update.message.from_user.id,
+                                 text=reply_text,
+                                 reply_markup=reply_keyboard)
+    else:
+        user_data = check_user_telegram(update.message.from_user.id)
+        logger.info(user_data)
+        link = os.getenv('FEEDBACK_LINK')
+        if user_data[2] > 0:
+            reply_text = resources.echo_message
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solved_free_consult, link)
+        elif user_data[1] > 0:
+            counter = paid_consults_telegram(update.message.from_user.id)
+            reply_text = resources.echo_message
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solo_paid_consult, link)
+        else:
+            reply_text = resources.echo_message
+            reply_keyboard = kb.solved_keyboard_generator(
+                kb.solo_buy_consult, link)
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=reply_text,
                                  reply_markup=kb.clarificational_consult)
-    else:
-        update.message.reply_text(
-            resources.echo_message,
-        )
         context.user_data['HISTORY'] += save_message_to_history(
             resources.echo_message, 'bot')
     return ConversationHandler.END
@@ -303,18 +329,18 @@ def issue_solved_handler(update: Update, context: CallbackContext):
     if user_data[2] > 0:
         reply_keyboard = kb.solved_keyboard_generator(
             kb.solved_free_consult, link)
-        reply_text = resources.greeting_message.replace(
+        reply_text = resources.user_finished.replace(
             '[counter]', '0')
     elif user_data[1] > 0:
         counter = paid_consults_telegram(context.user_data['ID'])
         reply_keyboard = kb.solved_keyboard_generator(
             kb.solved_paid_consult, link)
-        reply_text = resources.greeting_message.replace(
+        reply_text = resources.user_finished.replace(
             '[counter]', str(counter))
     else:
         reply_keyboard = kb.solved_keyboard_generator(
             kb.solved_buy_consult, link)
-        reply_text = resources.greeting_message.replace(
+        reply_text = resources.user_finished.replace(
             '[counter]', '0')
     time.sleep(1)
     context.bot.send_message(chat_id=context.user_data['ID'],
@@ -348,7 +374,7 @@ def paid_consult_handler(update: Update, context: CallbackContext):
     minus_paid_consult_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
                           'TelegramUser',
-                          'Уточнение',
+                          'Платная консультация',
                           'telegram')
     operator_handler(update, context)
     return CHAT
@@ -363,7 +389,7 @@ def consult_handler(update: Update, context: CallbackContext):
     reset_counter_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
                           'TelegramUser',
-                          'Платная консультация',
+                          'Уточнение',
                           'telegram')
     operator_handler(update, context)
     return CHAT
