@@ -310,7 +310,7 @@ def echo_handler(update: Update, context: CallbackContext):
             reply_keyboard = kb.solo_buy_consult
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=reply_text,
-                                 reply_markup=kb.clarificational_consult)
+                                 reply_markup=reply_keyboard)
         context.user_data['HISTORY'] += save_message_to_history(
             resources.echo_message, 'bot')
     return ConversationHandler.END
