@@ -21,7 +21,7 @@ from viberbot.api.messages.video_message import VideoMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import viberkeyboards as kb
-from db_func.database import add_user_viber, check_user_viber, minus_free_consult_viber, minus_paid_consult_viber, plus_paid_consult_viber, change_stage_to_chat_viber, reset_counter_viber, paid_consults_viber
+from db_func.database import get_phone_viber, add_user_viber, check_user_viber, minus_free_consult_viber, minus_paid_consult_viber, plus_paid_consult_viber, change_stage_to_chat_viber, reset_counter_viber, paid_consults_viber
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -56,8 +56,9 @@ def upload_image(path):
 def operator_connection(chat_id, tracking_data, consultancy):
     with open(f'media/{chat_id}/history.txt', 'r') as f:
         history = f.read()
+    user_phone = get_phone_viber(chat_id)
     jivochat.send_message(chat_id,
-                          "ViberUser",
+                          str(user_phone),
                           f'{history}\n\n{consultancy}',
                           'viber')
     try:
@@ -165,14 +166,16 @@ def user_message_handler(viber, viber_request):
                                     viber_request.message_token,
                                     'viber')
             else:
-                jivochat.send_message(chat_id, 'ViberUser',
+                user_phone = get_phone_viber(chat_id)
+                jivochat.send_message(chat_id, str(user_phone),
                                       text,
                                       'viber')
             reply_keyboard = kb.end_chat_keyboard
         else:
             if text == 'end_chat':
+                user_phone = get_phone_viber(chat_id)
                 jivochat.send_message(chat_id,
-                                      'ViberUser',
+                                      str(user_phone),
                                       jivosource.user_ended_chat,
                                       'viber')
                 answer = [TextMessage(text=resources.chat_ending)]

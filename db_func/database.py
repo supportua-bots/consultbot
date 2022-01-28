@@ -231,3 +231,21 @@ def paid_consults_telegram(chat_id):
     query = f"SELECT * FROM DATA WHERE chat_id_telegram = '{chat_id}';"
     rows = post_sql_query(query)
     return rows[0][1]
+
+
+@logger.catch
+def get_phone_telegram(chat_id):
+    query = f"SELECT phone FROM DATA WHERE chat_id_telegram = '{chat_id}';"
+    rows = post_sql_query(query)
+    return rows[0][0]
+
+
+@logger.catch
+def get_phone_viber(chat_id):
+    query = f"SELECT phone FROM DATA WHERE chat_id_viber = '{chat_id}';"
+    rows = post_sql_query(query)
+    return rows[0][0]
+
+
+if __name__ == '__main__':
+    logger.info(get_phone_telegram('389609639'))

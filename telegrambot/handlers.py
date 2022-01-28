@@ -17,7 +17,7 @@ from textskeyboards import texts as resources
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import telegramkeyboards as kb
-from db_func.database import export_all, add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram
+from db_func.database import get_phone_telegram, export_all, add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -155,8 +155,9 @@ def operator_handler(update: Update, context: CallbackContext):
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=resources.operator_message,
                                  reply_markup=reply_markup)
+    user_phone = get_phone_telegram(chat_id)
     jivochat.send_message(chat_id,
-                          'TelegramUser',
+                          str(user_phone),
                           context.user_data['HISTORY'],
                           'telegram')
     try:
@@ -214,10 +215,14 @@ def chat_handler(update: Update, context: CallbackContext):
         return CHAT
     elif reply == 'Завершити чат':
         reply_markup = ReplyKeyboardRemove()
+        user_phone = get_phone_telegram(update.message.from_user.id)
         jivochat.send_message(update.message.from_user.id,
-                              'TelegramUser',
+                              str(user_phone),
                               jivosource.user_ended_chat,
                               'telegram')
+        context.bot.send_message(chat_id=update.message.from_user.id,
+                                 text=resources.chat_ending,
+                                 reply_markup=reply_markup)
         user_data = check_user_telegram(update.message.from_user.id)
         logger.info(user_data)
         link = os.getenv('FEEDBACK_LINK')
@@ -231,19 +236,20 @@ def chat_handler(update: Update, context: CallbackContext):
             reply_text = resources.user_finished.replace(
                 '[counter]', str(counter))
             reply_keyboard = kb.solved_keyboard_generator(
-                kb.solo_paid_consult, link)
+                kb.solved_paid_consult, link)
         else:
             reply_text = resources.user_finished.replace(
                 '[counter]', '0')
             reply_keyboard = kb.solved_keyboard_generator(
-                kb.solo_buy_consult, link)
+                kb.solved_buy_consult, link)
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=reply_text,
                                  reply_markup=reply_keyboard)
         return ConversationHandler.END
     else:
+        user_phone = get_phone_telegram(update.message.from_user.id)
         jivochat.send_message(update.message.from_user.id,
-                              'TelegramUser',
+                              str(user_phone),
                               reply,
                               'telegram')
         return CHAT
@@ -257,8 +263,9 @@ def echo_handler(update: Update, context: CallbackContext):
     context.user_data['HISTORY'] += save_message_to_history(message, 'user')
     if message == 'Завершити чат':
         reply_markup = ReplyKeyboardRemove()
+        user_phone = get_phone_telegram(update.message.from_user.id)
         jivochat.send_message(update.message.from_user.id,
-                              'TelegramUser',
+                              str(user_phone),
                               jivosource.user_ended_chat,
                               'telegram')
         # context.bot.send_message(chat_id=update.message.from_user.id,
@@ -355,8 +362,9 @@ def free_consult_handler(update: Update, context: CallbackContext):
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     minus_free_consult_telegram(update.callback_query.message.chat.id)
+    user_phone = get_phone_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
-                          'TelegramUser',
+                          str(user_phone),
                           'Бесплатная консультация',
                           'telegram')
     operator_handler(update, context)
@@ -370,8 +378,9 @@ def paid_consult_handler(update: Update, context: CallbackContext):
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     minus_paid_consult_telegram(update.callback_query.message.chat.id)
+    user_phone = get_phone_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
-                          'TelegramUser',
+                          str(user_phone),
                           'Платная консультация',
                           'telegram')
     operator_handler(update, context)
@@ -385,8 +394,9 @@ def consult_handler(update: Update, context: CallbackContext):
     choice = choice_definer(update)
     context.user_data['HISTORY'] += save_message_to_history(choice, 'user')
     reset_counter_telegram(update.callback_query.message.chat.id)
+    user_phone = get_phone_telegram(update.callback_query.message.chat.id)
     jivochat.send_message(update.callback_query.message.chat.id,
-                          'TelegramUser',
+                          str(user_phone),
                           'Уточнение',
                           'telegram')
     operator_handler(update, context)

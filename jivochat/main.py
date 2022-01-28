@@ -88,6 +88,11 @@ def main(data, source):
                 change_stage_to_await_telegram(user_id)
                 bot.send_message(
                             chat_id=user_id,
+                            text=texts.chat_ending,
+                            reply_markup=reply_markup)
+                time.sleep(1)
+                bot.send_message(
+                            chat_id=user_id,
                             text=texts.operator_ended_chat,
                             reply_markup=telegramkeyboards.clarificational_consult)
             else:

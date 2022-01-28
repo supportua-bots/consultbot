@@ -30,6 +30,7 @@ def send_message(user_id, name, text, source):
             {
                 "id": str(user_id),
                 "name": f'{name} [{user_id}]',
+                "phone": f"+{name}"
             },
             "message":
             {
@@ -78,6 +79,7 @@ def send_photo(user_id, name, file, filename, source):
             {
                 "id": str(user_id),
                 "name": f'{name} [{user_id}]',
+                "phone": f"+{name}"
             },
             "message":
             {
@@ -115,6 +117,7 @@ def send_video(user_id, name, file, filename, source):
             {
                 "id": str(user_id),
                 "name": f'{name} [{user_id}]',
+                "phone": f"+{name}"
             },
             "message": message
     }
@@ -135,6 +138,7 @@ def send_document(user_id, name, file, filename, source):
             {
                 "id": user_id,
                 "name": f'{name} [{user_id}]',
+                "phone": f"+{name}"
             },
             "message":
             {
