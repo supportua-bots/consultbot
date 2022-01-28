@@ -40,6 +40,13 @@ def create_table():
 
 
 @logger.catch
+def export_all():
+    sql_selection = "SELECT chat_id_telegram, chat_id_viber, circle_paid, circle_free, phone FROM DATA;"
+    rows = post_sql_query(sql_selection)
+    return rows
+
+
+@logger.catch
 def add_user_viber(chat_id, phone):
     sql_selection = f"SELECT * FROM DATA WHERE "\
                         f"phone = '{phone}';"

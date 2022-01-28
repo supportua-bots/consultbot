@@ -11,7 +11,7 @@ from .handlers import (echo_handler, greetings_handler, menu_handler,
                        free_consult_handler, paid_consult_handler,
                        consult_handler, buy_consult_handler, purchase_handler,
                        link_handler, payment_completed_handler, phone_handler,
-                       questions_handler)
+                       questions_handler, file_handler)
 from loguru import logger
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -28,6 +28,7 @@ logger.add(
 
 TOKEN = os.getenv("TOKEN")
 CHAT, MENU = range(2)
+ALLOWED_USERS = os.getenv('ALLOWED_USERS').split(',')
 
 
 @logger.catch
@@ -56,6 +57,8 @@ def main():
     # Навесить обработчики команд
     conv_handler = ConversationHandler(
         entry_points=[
+            CommandHandler('data', file_handler, Filters.user(
+                username=ALLOWED_USERS)),
             CommandHandler('start', menu_handler),
             CallbackQueryHandler(questions_handler,
                                  pattern=r'^questions$',

@@ -1,4 +1,5 @@
 import os
+import csv
 import time
 import requests
 import locale
@@ -16,7 +17,7 @@ from textskeyboards import texts as resources
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import telegramkeyboards as kb
-from db_func.database import add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram
+from db_func.database import export_all, add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -292,17 +293,14 @@ def echo_handler(update: Update, context: CallbackContext):
         link = os.getenv('FEEDBACK_LINK')
         if user_data[2] > 0:
             reply_text = resources.echo_message
-            reply_keyboard = kb.solved_keyboard_generator(
-                kb.solved_free_consult, link)
+            reply_keyboard = kb.solo_free_consult
         elif user_data[1] > 0:
             counter = paid_consults_telegram(update.message.from_user.id)
             reply_text = resources.echo_message
-            reply_keyboard = kb.solved_keyboard_generator(
-                kb.solo_paid_consult, link)
+            reply_keyboard = kb.solo_paid_consult
         else:
             reply_text = resources.echo_message
-            reply_keyboard = kb.solved_keyboard_generator(
-                kb.solo_buy_consult, link)
+            reply_keyboard = kb.solo_buy_consult
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=reply_text,
                                  reply_markup=kb.clarificational_consult)
@@ -520,4 +518,28 @@ def questions_handler(update: Update, context: CallbackContext):
                              text=reply_text,
                              reply_markup=reply_keyboard)
     context.user_data['HISTORY'] += save_message_to_history(reply_text, 'bot')
+    return ConversationHandler.END
+
+
+def file_handler(update: Update, context: CallbackContext):
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text='Файл готовиться и будет отправлен в следующем сообщении.')
+    data = export_all()
+    try:
+        os.remove('data.csv')
+    except FileNotFoundError:
+        logger.info('File not found')
+    with open('data.csv', 'w+', newline='') as file:
+        wr = csv.writer(file, quoting=csv.QUOTE_ALL)
+        wr.writerow(['chat_id_telegram', 'chat_id_viber',
+                     'circle_paid', 'circle_free', 'phone'])
+        wr.writerows(data)
+    with open('data.csv', 'rb') as file:
+        context.bot.send_document(chat_id=update.effective_chat.id,
+                                  document=file,
+                                  filename='data.csv')
+        time.sleep(1)
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text='Для возвращения нажмите /start')
+
     return ConversationHandler.END
