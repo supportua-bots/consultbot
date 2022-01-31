@@ -101,6 +101,10 @@ def main(data, source):
                 tracking_data = {'HISTORY': '', 'CHAT_MODE': 'off'}
                 tracking_data = json.dumps(tracking_data)
                 change_stage_to_await_viber(user_id)
+                viber.send_messages(user_id, [TextMessage(text=texts.chat_ending,
+                                                          keyboard=viberkeyboards.clarificational_consult,
+                                                          tracking_data=tracking_data)])
+                time.sleep(1)
                 viber.send_messages(user_id, [TextMessage(text=texts.operator_ended_chat,
                                                           keyboard=viberkeyboards.clarificational_consult,
                                                           tracking_data=tracking_data)])

@@ -182,18 +182,23 @@ def user_message_handler(viber, viber_request):
                 viber.send_messages(chat_id, answer)
                 user_data = check_user_viber(viber_request.sender.id)
                 logger.info(user_data)
+                link = os.getenv('FEEDBACK_LINK')
                 if user_data[2] > 0:
-                    reply_keyboard = kb.free_consult
-                    reply_text = resources.free_consult_message
+                    reply_keyboard = kb.solved_keyboard_generator(
+                        kb.solved_free_consult, link)
+                    reply_text = resources.user_finished.replace(
+                        '[counter]', '0')
                 elif user_data[1] > 0:
                     counter = paid_consults_viber(chat_id)
-                    reply_keyboard = kb.paid_consult
-                    reply_text = resources.greeting_message.replace(
+                    reply_text = resources.user_finished.replace(
                         '[counter]', str(counter))
+                    reply_keyboard = kb.solved_keyboard_generator(
+                        kb.solved_paid_consult, link)
                 else:
-                    reply_keyboard = kb.buy_consult
-                    reply_text = resources.greeting_message.replace(
+                    reply_text = resources.user_finished.replace(
                         '[counter]', '0')
+                    reply_keyboard = kb.solved_keyboard_generator(
+                        kb.solved_buy_consult, link)
                 time.sleep(1)
             elif text == 'issue_solved':
                 change_stage_to_chat_viber(chat_id)
