@@ -67,13 +67,13 @@ def delete_task_for_notification(chat_id):
 
 @logger.catch
 def add_task_for_notification_viber(chat_id):
-    query = f"INSERT INTO DATA (chat_id, platform, stage, counter) VALUES ('{chat_id}', 'viber', '1', '0');"
+    query = f"INSERT INTO NOTIFICATION (chat_id, platform, stage, counter) VALUES ('{chat_id}', 'viber', '1', '0');"
     logger.info(post_sql_query(query))
 
 
 @logger.catch
 def add_task_for_notification_telegram(chat_id):
-    query = f"INSERT INTO DATA (chat_id, platform, stage, counter) VALUES ('{chat_id}', 'telegram', '1', '0');"
+    query = f"INSERT INTO NOTIFICATION (chat_id, platform, stage, counter) VALUES ('{chat_id}', 'telegram', '1', '0');"
     logger.info(post_sql_query(query))
 
 
