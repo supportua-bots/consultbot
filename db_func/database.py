@@ -8,6 +8,7 @@ from loguru import logger
 
 @logger.catch
 def post_sql_query(sql_query):
+    logger.info(sql_query)
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'my.db')
     with sqlite3.connect(db_path) as connection:
         cursor = connection.cursor()
