@@ -116,7 +116,7 @@ def notifiers():
                     plus_wait_notification_telegram(item[0])
                 else:
                     plus_wait_notification_viber(item[0])
-                if int(item[3]) == 2:
+                if int(item[3]) == 1440:
                     text = resources.push_text_1
                     send_notification(item[0], item[1], text)
                 if int(item[3]) == 2880:
