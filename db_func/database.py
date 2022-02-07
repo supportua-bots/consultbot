@@ -91,7 +91,7 @@ def plus_wait_notification_viber(chat_id):
 
 @logger.catch
 def plus_wait_notification_telegram(chat_id):
-    sql_selection = f"SELECT * FROM DATA NOTIFICATION WHERE"\
+    sql_selection = f"SELECT * FROM DATA NOTIFICATION WHERE "\
                         f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if rows:
