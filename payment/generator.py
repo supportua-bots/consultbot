@@ -61,7 +61,13 @@ def get_payment_link(product_count, chat_id, platform):
 
 def get_liqpay_link(product_count, chat_id, platform, phone):
     order_date = int(datetime.today().timestamp())
-    amount = int(product_price) * int(product_count)
+    if int(product_count) == 1:
+        amount = 49
+    elif int(product_count) == 3:
+        amount = 99
+    else:
+        amount = 149
+    # amount = int(product_price) * int(product_count)
     order_reference = f'{chat_id}%%{str(order_date)}%%{platform}'
     liqpay = LiqPay(os.getenv('LIQPAY_PUBLIC'),
                     os.getenv('LIQPAY_PRIVATE'))
