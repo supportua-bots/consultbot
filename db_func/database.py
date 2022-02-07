@@ -85,7 +85,7 @@ def plus_wait_notification_viber(chat_id):
     rows = post_sql_query(sql_selection)
     if rows:
         updated_field = int(rows[0][3]) + 1
-        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        query = f"UPDATE NOTIFICATION SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
         post_sql_query(query)
 
 
@@ -96,7 +96,7 @@ def plus_wait_notification_telegram(chat_id):
     rows = post_sql_query(sql_selection)
     if rows:
         updated_field = int(rows[0][3]) + 1
-        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        query = f"UPDATE NOTIFICATION SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
         post_sql_query(query)
 
 
