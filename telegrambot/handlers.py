@@ -17,7 +17,7 @@ from textskeyboards import texts as resources
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import telegramkeyboards as kb
-from db_func.database import get_phone_telegram, export_all, add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram
+from db_func.database import get_phone_telegram, export_all, add_user_telegram, check_user_telegram, minus_free_consult_telegram, minus_paid_consult_telegram, plus_paid_consult_telegram, change_stage_to_chat_telegram, reset_counter_telegram, paid_consults_telegram, add_task_for_notification_telegram, delete_task_for_notification
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -99,6 +99,7 @@ def menu_handler(update: Update, context: CallbackContext):
         if user_data[2] > 0:
             reply_keyboard = kb.free_consult
             reply_text = resources.free_consult_message
+            add_task_for_notification_telegram(chat_id)
         elif user_data[1] > 0:
             counter = paid_consults_telegram(chat_id)
             reply_keyboard = kb.paid_consult
@@ -357,6 +358,7 @@ def issue_solved_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def free_consult_handler(update: Update, context: CallbackContext):
+    delete_task_for_notification(update.callback_query.message.chat.id)
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
     choice = choice_definer(update)

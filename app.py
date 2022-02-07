@@ -9,6 +9,7 @@ from payment.generator import get_response_data
 from payment.handler import main as sender
 from payment.handler import liqpay_main
 from tasks.task import task_checker as taskfunel
+from tasks.task import notifiers
 from telegrambot import main as tgbot
 
 
@@ -90,6 +91,7 @@ if __name__ == '__main__':
     # telegram_bot = Process(target=tgbot.main).start()
     create_table()
     try:
+        notifications = Process(target=notifiers).start()
         background_process = Process(target=taskfunel).start()
         flask_server = Process(target=server_launch).start()
         telegram_bot = Process(target=tgbot.main).start()
@@ -97,6 +99,8 @@ if __name__ == '__main__':
         flask_server.terminate()
         telegram_bot.terminate()
         background_process.terminate()
+        notifications.terminate()
         flask_server.join()
         telegram_bot.join()
         background_process.join()
+        notifications.join()

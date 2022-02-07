@@ -21,7 +21,7 @@ from viberbot.api.messages.video_message import VideoMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from textskeyboards import viberkeyboards as kb
-from db_func.database import get_phone_viber, add_user_viber, check_user_viber, minus_free_consult_viber, minus_paid_consult_viber, plus_paid_consult_viber, change_stage_to_chat_viber, reset_counter_viber, paid_consults_viber
+from db_func.database import get_phone_viber, add_user_viber, check_user_viber, minus_free_consult_viber, minus_paid_consult_viber, plus_paid_consult_viber, change_stage_to_chat_viber, reset_counter_viber, paid_consults_viber, add_task_for_notification_viber, delete_task_for_notification
 from payment.generator import get_payment_link, get_liqpay_link
 
 
@@ -109,6 +109,7 @@ def user_message_handler(viber, viber_request):
             if user_data[2] > 0:
                 reply_keyboard = kb.free_consult
                 reply_text = resources.free_consult_message
+                add_task_for_notification_viber(viber_request.sender.id)
             elif user_data[1] > 0:
                 counter = paid_consults_viber(chat_id)
                 reply_keyboard = kb.paid_consult
@@ -238,6 +239,7 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.phone_keyboard
                 reply_text = resources.phone_message
             elif text == 'free_consult':
+                delete_task_for_notification(chat_id)
                 tracking_data['CHAT_MODE'] = 'on'
                 operator_connection(chat_id, tracking_data,
                                     'Бесплатная консультация')

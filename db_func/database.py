@@ -37,6 +37,12 @@ def create_table():
                         phone TEXT,
                         chat_id_telegram TEXT);'''
     post_sql_query(query)
+    query = '''CREATE TABLE IF NOT EXISTS NOTIFICATION
+                        (chat_id TEXT,
+                        platform TEXT,
+                        stage TEXT,
+                        counter INTEGER);'''
+    post_sql_query(query)
 
 
 @logger.catch
@@ -44,6 +50,53 @@ def export_all():
     sql_selection = "SELECT chat_id_telegram, chat_id_viber, circle_paid, circle_free, phone FROM DATA;"
     rows = post_sql_query(sql_selection)
     return rows
+
+
+@logger.catch
+def notification_list():
+    sql_selection = f"SELECT * FROM NOTIFICATION;"
+    rows = post_sql_query(sql_selection)
+    return rows
+
+
+@logger.catch
+def delete_task_for_notification(chat_id):
+    query = f"DELETE FROM NOTIFICATION WHERE chat_id = '{chat_id}';"
+    logger.info(post_sql_query(query))
+
+
+@logger.catch
+def add_task_for_notification_viber(chat_id):
+    query = f"INSERT INTO DATA (chat_id, platform, stage, counter) VALUES ('{chat_id}', 'viber', '1', '0');"
+    logger.info(post_sql_query(query))
+
+
+@logger.catch
+def add_task_for_notification_telegram(chat_id):
+    query = f"INSERT INTO DATA (chat_id, platform, stage, counter) VALUES ('{chat_id}', 'telegram', '1', '0');"
+    logger.info(post_sql_query(query))
+
+
+@logger.catch
+def plus_wait_notification_viber(chat_id):
+    sql_selection = f"SELECT * FROM DATA NOTIFICATION "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][3]) + 1
+        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        post_sql_query(query)
+
+
+@logger.catch
+def plus_wait_notification_telegram(chat_id):
+    sql_selection = f"SELECT * FROM DATA NOTIFICATION "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if rows:
+        updated_field = int(rows[0][3]) + 1
+        query = f"UPDATE DATA SET counter = '{updated_field}' WHERE chat_id = '{chat_id}';"
+        post_sql_query(query)
 
 
 @logger.catch
