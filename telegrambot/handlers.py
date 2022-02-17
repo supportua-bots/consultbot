@@ -128,11 +128,13 @@ def menu_handler(update: Update, context: CallbackContext):
         context.bot.send_message(chat_id=update.callback_query.message.chat.id,
                                  text=reply_text,
                                  reply_markup=reply_keyboard)
+        logger.info('Callback Message')
     except AttributeError:
         request = update.message
         context.bot.send_message(chat_id=update.message.from_user.id,
                                  text=reply_text,
                                  reply_markup=reply_keyboard)
+        logger.info('Reply Message')
     context.user_data['HISTORY'] += save_message_to_history(
         resources.greeting_message, 'bot')
     return ConversationHandler.END
