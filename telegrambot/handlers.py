@@ -112,12 +112,13 @@ def menu_handler(update: Update, context: CallbackContext):
     else:
         state = phone_handler(update, context)
         return state
-    reply_markup = ReplyKeyboardRemove()
-    context.bot.send_message(
-                chat_id=chat_id,
-                text=phone,
-                reply_markup=reply_markup)
-    time.sleep(1)
+    if phone:
+        reply_markup = ReplyKeyboardRemove()
+        context.bot.send_message(
+                    chat_id=chat_id,
+                    text=phone,
+                    reply_markup=reply_markup)
+        time.sleep(1)
     try:
         request = update.callback_query.message
         choice = choice_definer(update)
