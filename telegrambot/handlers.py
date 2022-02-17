@@ -560,6 +560,6 @@ def file_handler(update: Update, context: CallbackContext):
                                   filename='data.csv')
         time.sleep(1)
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text='Для возвращения нажмите /start')
+                                 text='Для возвращения нажмите /restart')
 
     return ConversationHandler.END

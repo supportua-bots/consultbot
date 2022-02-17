@@ -59,7 +59,8 @@ def main():
         entry_points=[
             CommandHandler('data', file_handler, Filters.user(
                 username=ALLOWED_USERS)),
-            CommandHandler('start', menu_handler),
+            CommandHandler('start', greetings_handler),
+            CommandHandler('restart', menu_handler),
             CallbackQueryHandler(questions_handler,
                                  pattern=r'^questions$',
                                  pass_user_data=True),
