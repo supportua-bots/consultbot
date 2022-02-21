@@ -58,10 +58,9 @@ def main(data, source):
                 tracking_data = {'NAME': user, 'HISTORY': '',
                                  'CHAT_MODE': 'on', 'STAGE': 'menu'}
                 tracking_data = json.dumps(tracking_data)
-                keyboard = [('Завершити чат', 'end_chat')]
-                reply_keyboard = keyboard_consctructor(keyboard)
+                # keyboard = [('Завершити чат', 'end_chat')]
+                # reply_keyboard = keyboard_consctructor(keyboard)
                 viber.send_messages(user, [TextMessage(text=text,
-                                                       keyboard=reply_keyboard,
                                                        tracking_data=tracking_data)])
         if data['message']['type'] == 'photo':
             user = data['recipient']['id']
@@ -73,10 +72,9 @@ def main(data, source):
                 tracking_data = {'NAME': user, 'HISTORY': '',
                                  'CHAT_MODE': 'on', 'STAGE': 'menu'}
                 tracking_data = json.dumps(tracking_data)
-                keyboard = [('Завершити чат', 'end_chat')]
-                reply_keyboard = keyboard_consctructor(keyboard)
+                # keyboard = [('Завершити чат', 'end_chat')]
+                # reply_keyboard = keyboard_consctructor(keyboard)
                 viber.send_messages(user, [PictureMessage(text='',
-                                                          keyboard=reply_keyboard,
                                                           tracking_data=tracking_data,
                                                           media=link)])
     else:

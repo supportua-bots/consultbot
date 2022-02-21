@@ -145,9 +145,9 @@ def menu_handler(update: Update, context: CallbackContext):
 def operator_handler(update: Update, context: CallbackContext):
     if 'HISTORY' not in context.user_data:
         context.user_data['HISTORY'] = ''
-    contact_keyboard = KeyboardButton('Завершити чат')
-    reply_markup = ReplyKeyboardMarkup(keyboard=[[contact_keyboard]],
-                                       resize_keyboard=True)
+    # contact_keyboard = KeyboardButton('Завершити чат')
+    # reply_markup = ReplyKeyboardMarkup(keyboard=[[contact_keyboard]],
+    #                                    resize_keyboard=True)
     context.user_data['HISTORY'] += save_message_to_history(
         resources.operator_message, 'bot')
     try:
@@ -157,14 +157,12 @@ def operator_handler(update: Update, context: CallbackContext):
             text=update.callback_query.message.text
         )
         context.bot.send_message(chat_id=update.callback_query.message.chat.id,
-                                 text=resources.operator_message,
-                                 reply_markup=reply_markup)
+                                 text=resources.operator_message)
     except:
         request = update.message
         chat_id = update.message.from_user.id
         context.bot.send_message(chat_id=update.message.from_user.id,
-                                 text=resources.operator_message,
-                                 reply_markup=reply_markup)
+                                 text=resources.operator_message)
     user_phone = get_phone_telegram(chat_id)
     jivochat.send_message(chat_id,
                           str(user_phone),

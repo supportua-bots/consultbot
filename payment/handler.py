@@ -98,7 +98,14 @@ def liqpay_main(data):
     clean_data = json.loads(base64.b64decode(decoded_data['data'][0]).decode())
     chat_id = str(clean_data['order_id'].split('%%')[0])
     platform = str(clean_data['order_id'].split('%%')[2])
-    amount = int(clean_data['amount'])
+    count = int(clean_data['amount'])
+    amount = 0
+    if count == 49:
+        amount = 1
+    if count == 99:
+        amount = 3
+    if count == 149:
+        amount = 5
     payment_status = str(clean_data['status'])
     logger.info(clean_data)
     if payment_status == 'success':

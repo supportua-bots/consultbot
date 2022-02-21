@@ -171,7 +171,7 @@ def user_message_handler(viber, viber_request):
                 jivochat.send_message(chat_id, str(user_phone),
                                       text,
                                       'viber')
-            reply_keyboard = kb.end_chat_keyboard
+            # reply_keyboard = kb.end_chat_keyboard
         else:
             if text == 'end_chat':
                 user_phone = get_phone_viber(chat_id)
@@ -244,7 +244,7 @@ def user_message_handler(viber, viber_request):
                 operator_connection(chat_id, tracking_data,
                                     'Бесплатная консультация')
                 minus_free_consult_viber(chat_id)
-                reply_keyboard = kb.end_chat_keyboard
+                # reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'consult':
                 change_stage_to_chat_viber(chat_id)
@@ -252,14 +252,14 @@ def user_message_handler(viber, viber_request):
                 tracking_data['CHAT_MODE'] = 'on'
                 operator_connection(chat_id, tracking_data,
                                     'Уточнение')
-                reply_keyboard = kb.end_chat_keyboard
+                # reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'paid_consult':
                 tracking_data['CHAT_MODE'] = 'on'
                 operator_connection(chat_id, tracking_data,
                                     'Платная консультация')
                 minus_paid_consult_viber(chat_id)
-                reply_keyboard = kb.end_chat_keyboard
+                # reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
             elif text == 'buy_consult':
                 user_data = check_user_viber(chat_id)
@@ -317,8 +317,14 @@ def user_message_handler(viber, viber_request):
             save_message_to_history(reply_text, 'bot', chat_id)
             logger.info(tracking_data)
             tracking_data = json.dumps(tracking_data)
-            reply = [TextMessage(text=reply_text,
-                                 keyboard=reply_keyboard,
-                                 tracking_data=tracking_data,
-                                 min_api_version=6)]
-            viber.send_messages(chat_id, reply)
+            try:
+                reply = [TextMessage(text=reply_text,
+                                     keyboard=reply_keyboard,
+                                     tracking_data=tracking_data,
+                                     min_api_version=6)]
+                viber.send_messages(chat_id, reply)
+            except:
+                reply = [TextMessage(text=reply_text,
+                                     tracking_data=tracking_data,
+                                     min_api_version=6)]
+                viber.send_messages(chat_id, reply)
